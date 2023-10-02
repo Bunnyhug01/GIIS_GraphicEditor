@@ -35,14 +35,16 @@ import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
 
 import { Slider, colors } from '@mui/material';
 
-import drawLineDDA from './algorithms/DDA_Algorithm';
-import drawLineBresenham from './algorithms/Bresenham_Algorithm';
-import drawLineAntialiasing from './algorithms/Antialiasing_Algorithm';
+import drawLineDDA from './algorithms/lines/DDA_Algorithm';
+import drawLineBresenham from './algorithms/lines/Bresenham_Algorithm';
+import drawLineAntialiasing from './algorithms/lines/Antialiasing_Algorithm';
 import debugGrid from './algorithms/debugGrid';
-import drawParabola from './algorithms/Parabola_Algorithm';
-import drawCircle from './algorithms/Circle_Algorithm';
-import drawEllipse from './algorithms/Ellipse_Algorithm';
-import drawHyperbola from './algorithms/Hyperbola_Algorithm';
+import drawParabola from './algorithms/Second-order lines/Parabola_Algorithm';
+import drawCircle from './algorithms/Second-order lines/Circle_Algorithm';
+import drawEllipse from './algorithms/Second-order lines/Ellipse_Algorithm';
+import drawHyperbola from './algorithms/Second-order lines/Hyperbola_Algorithm';
+import drawHyperbolaSecond from './algorithms/Second-order lines/Hyperbola_Second_Algorithm';
+import drawParabolaSecond from './algorithms/Second-order lines/Parabola_Second_Algorithm';
 
 
 
@@ -297,10 +299,12 @@ export default function Home(props: Props) {
               coordinates = drawEllipse(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
             }
             else if (buttonType === 'Parabola') {
-              coordinates = drawParabola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
+              // coordinates = drawParabola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
+              coordinates = drawParabolaSecond(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
             }
             else if (buttonType === 'Hyperbola') {
-              coordinates = drawHyperbola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
+              // coordinates = drawHyperbola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
+              coordinates = drawHyperbolaSecond(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
             }
 
 
@@ -323,10 +327,12 @@ export default function Home(props: Props) {
               drawEllipse(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], 'black', pixelSize);
             }
             else if (buttonType === 'Parabola') {
-              drawParabola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], 'black', pixelSize);
+              // drawParabola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], 'black', pixelSize);
+              drawParabolaSecond(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], 'black', pixelSize);
             }
             else if (buttonType === 'Hyperbola') {
-              drawHyperbola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], 'black', pixelSize);
+              //drawHyperbola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], 'black', pixelSize);
+              drawHyperbolaSecond(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], 'black', pixelSize);
             }
             
           }

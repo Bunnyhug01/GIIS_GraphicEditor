@@ -1,4 +1,4 @@
-import range from "./range";
+import range from "../range";
 
 
 export default function drawLineBresenham(ctx: CanvasRenderingContext2D, begin: number[], end: number[], stroke = 'black', pixelSize:number = 1): number[][] {
