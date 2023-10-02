@@ -67,6 +67,7 @@ export default function Home(props: Props) {
   const [selectedButton, setSelectedButton] = useState<string>("");
 
   const [pixelSize, setPixelSize] = useState<number>(1);
+  const [color, setColor] = useState<string>("");
 
   let clicked: boolean = false; 
 
@@ -179,6 +180,14 @@ export default function Home(props: Props) {
           valueLabelDisplay="auto"
           onChange={(event, value) => handleSlider(value)}
         />
+        <Typography>Color Picker</Typography>
+        <div>
+          <input 
+            type="color"
+            className="ml-5 w-[80%]"
+            onChange={(color) => setColor(color.target.value)}
+          />
+        </div>
       </List>
     </div>
   );
@@ -308,31 +317,31 @@ export default function Home(props: Props) {
             }
 
 
-            document.addEventListener('keydown', (evt) => {debugListener(evt, ctx, coordinates, coordinatesPrev)});
+            document.addEventListener('keydown', (evt) => {debugListener(evt, ctx, coordinates, coordinatesPrev, color)});
           } else {
 
             if (buttonType === 'Line DDA') {
-              drawLineDDA(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], 'blue', pixelSize);
+              drawLineDDA(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
             }
             else if (buttonType === 'Bresenham') {
-              drawLineBresenham(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], 'green', pixelSize);
+              drawLineBresenham(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
             }
             else if (buttonType === 'Antialiasing') {
-              drawLineAntialiasing(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], 'black', pixelSize);
+              drawLineAntialiasing(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
             }
             else if (buttonType === 'Circle') {
-              drawCircle(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], 'black', pixelSize);
+              drawCircle(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
             }
             else if (buttonType === 'Ellipse') {
-              drawEllipse(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], 'black', pixelSize);
+              drawEllipse(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
             }
             else if (buttonType === 'Parabola') {
-              // drawParabola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], 'black', pixelSize);
-              drawParabolaSecond(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], 'black', pixelSize);
+              // drawParabola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
+              drawParabolaSecond(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
             }
             else if (buttonType === 'Hyperbola') {
-              //drawHyperbola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], 'black', pixelSize);
-              drawHyperbolaSecond(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], 'black', pixelSize);
+              //drawHyperbola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
+              drawHyperbolaSecond(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
             }
             
           }
