@@ -5,13 +5,13 @@ export default function drawParabolaSecond(ctx: CanvasRenderingContext2D, startP
     
     const coordinates:number[][] = [];
 
-    const p:number = 2;
-
     const x0:number = Math.floor(startPoints[0]) / pixelSize;
     const y0:number = Math.floor(startPoints[1]) / pixelSize;
 
     const xEnd:number = Math.floor(endPoints[0]) / pixelSize;
     const yEnd:number = Math.floor(endPoints[1]) / pixelSize;
+
+	const p:number = Math.abs(Math.floor(xEnd - x0));
 
 	let x:number = 0;
 	let y:number = 0

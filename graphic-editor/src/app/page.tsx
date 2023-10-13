@@ -1,9 +1,8 @@
 'use client'
 
+import * as React from 'react';
 import {useEffect, useState} from 'react';
 
-
-import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -18,6 +17,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import Grid4x4 from '@mui/icons-material/Grid4x4';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import AnimationIcon from '@mui/icons-material/Animation';
 
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -29,23 +30,18 @@ import Typography from '@mui/material/Typography';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import AnimationIcon from '@mui/icons-material/Animation';
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
 
-import { Slider, colors } from '@mui/material';
+import { Slider } from '@mui/material';
 
 import drawLineDDA from './algorithms/lines/DDA_Algorithm';
 import drawLineBresenham from './algorithms/lines/Bresenham_Algorithm';
 import drawLineAntialiasing from './algorithms/lines/Antialiasing_Algorithm';
 import debugGrid from './algorithms/debugGrid';
-import drawParabola from './algorithms/Second-order lines/Parabola_Algorithm';
-import drawCircle from './algorithms/Second-order lines/Circle_Algorithm';
-import drawEllipse from './algorithms/Second-order lines/Ellipse_Algorithm';
-import drawHyperbola from './algorithms/Second-order lines/Hyperbola_Algorithm';
-import drawHyperbolaSecond from './algorithms/Second-order lines/Hyperbola_Second_Algorithm';
-import drawParabolaSecond from './algorithms/Second-order lines/Parabola_Second_Algorithm';
-
+import drawCircle from './algorithms/Second-order_lines/Circle_Algorithm';
+import drawEllipse from './algorithms/Second-order_lines/Ellipse_Algorithm';
+import drawHyperbolaSecond from './algorithms/Second-order_lines/Hyperbola_Second_Algorithm';
+import drawParabolaSecond from './algorithms/Second-order_lines/Parabola_Second_Algorithm';
 
 
 const drawerWidth = 240;
@@ -67,7 +63,7 @@ export default function Home(props: Props) {
   const [selectedButton, setSelectedButton] = useState<string>("");
 
   const [pixelSize, setPixelSize] = useState<number>(1);
-  const [color, setColor] = useState<string>("");
+  const [color, setColor] = useState<string>("black");
 
   let clicked: boolean = false; 
 
@@ -242,7 +238,7 @@ export default function Home(props: Props) {
 
   const debugListener = (evt: KeyboardEvent, ctx: CanvasRenderingContext2D, coordinates: number[][], coordinatesPrev:number[][] = [], color:string = 'black') => {
     ctx.fillStyle = color;
-    
+
     if (evt.key === 'ArrowRight' && coordinates.length !== 0) {
 
       if (coordinates[0].length === 3) {
@@ -285,7 +281,7 @@ export default function Home(props: Props) {
         }
         else if (pointsCount === 2) {
           endPoints = [mousePos.x, mousePos.y];
-         
+          
           if (debug) {
             let coordinates:number[][] = [];
             const coordinatesPrev:number[][] = [];
@@ -399,14 +395,13 @@ export default function Home(props: Props) {
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
         aria-label="mailbox folders"
       >
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Drawer
           container={container}
           variant="temporary"
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true,
           }}
           sx={{
             display: { xs: 'block', sm: 'none' },
