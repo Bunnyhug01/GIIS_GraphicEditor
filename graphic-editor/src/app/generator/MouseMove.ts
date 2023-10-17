@@ -1,5 +1,8 @@
+import { sqrt } from "mathjs";
 import Point from "../objects/Point";
 import { GeneratorContext, ObjectGenerator } from "./ObjectGenerator";
+
+import { minBy } from "../utils/arrays";
 
 export default class MouseMove extends ObjectGenerator {
     private _mouse: Point | null = null
@@ -17,15 +20,24 @@ export default class MouseMove extends ObjectGenerator {
 		mouse.y += y - this._lastY
 		this._lastX = x
 		this._lastY = y
+
+		ctx.repaint()
 	}
 
-	// press(ctx: GeneratorContext, x: number, y: number) {
-	// 	mouse = ctx.flatMap { it }.minBy { it.distance(x, y) }
-	// 	lastX = x
-	// 	lastY = y
-	// }
+	press(ctx: GeneratorContext, x: number, y: number) {
+		this._mouse = minBy(ctx.getObjects().flatMap(x => x.getPoints()), (p: Point) => distance(p, x, y))
+		this._lastX = x
+		this._lastY = y
+	}
 
-	// override fun release(ctx: ObjectGenerator.Context, x: Int, y: Int) {
-	// 	mouse = null
-	// }
+	release(ctx: GeneratorContext, x: number, y: number) {
+		this._mouse = null
+	}
 }
+
+function distance(p: Point, x: number, y: number): number {
+	const dx = p.x - x
+	const dy = p.y - y
+	return sqrt(dx * dx + dy * dy) as number
+}
+

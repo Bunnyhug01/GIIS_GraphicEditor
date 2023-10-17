@@ -1,6 +1,6 @@
 import MultiPointDrawer from "../algorithms/drawer/MultiPointDrawer"
 import PixelDrawer from "../algorithms/drawer/PixelDrawer"
-import makeIterator from "../utils/iterator"
+import makeIterator from "../utils/arrays"
 import DrawObject from "./DrawObject"
 import Point from "./Point"
 

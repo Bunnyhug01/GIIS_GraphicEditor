@@ -20,7 +20,7 @@ export default class DDALineDrawer extends TwoPointDrawer {
       x1 += dx;
       y1 += dy;
 
-      drawer.drawPixel(x1, y1)
+      drawer.drawPixel(Math.floor(x1), Math.floor(y1))
     }
   }
 }

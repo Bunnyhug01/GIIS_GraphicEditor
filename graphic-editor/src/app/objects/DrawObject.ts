@@ -1,7 +1,13 @@
 import BasePixelDrawer from "../algorithms/drawer/BasePixelDrawer"
 import PixelDrawer from "../algorithms/drawer/PixelDrawer"
+import Point from "./Point"
 
 export default class DrawObject {
+	
+    getPoints(): Point[] {
+		throw new Error("Method not implemented.")
+	}
+
     draw(drawer:PixelDrawer) {}
 
     countPixel(): number {
@@ -15,5 +21,4 @@ export default class DrawObject {
         return count
     }
 
-    iterator() {throw new Error()}
 }

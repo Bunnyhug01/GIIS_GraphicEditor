@@ -27,6 +27,7 @@ export default class MultiCountPointGenerator extends ObjectGenerator {
 
 		mouse.x = x;
 		mouse.y = y;
+		ctx.repaint()
 	}
 
 	click(ctx: GeneratorContext, x: number, y: number) {
@@ -37,6 +38,7 @@ export default class MultiCountPointGenerator extends ObjectGenerator {
 				line = new DebugDrawObject(line);
 				ctx.add(line);
 			}
+			ctx.repaint()
 			this._points = [];
 			this._obj = null;
 			this._mouse = null;
@@ -51,6 +53,7 @@ export default class MultiCountPointGenerator extends ObjectGenerator {
 			let obj = this.newObject(this._points);
 			this._obj = obj;
 			ctx.add(obj);
+			ctx.repaint()
 		}
 	}
 }

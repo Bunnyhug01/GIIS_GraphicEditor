@@ -16,13 +16,11 @@ export default class MultiPointGenerator extends ObjectGenerator {
 
     move(ctx: GeneratorContext, x: number, y: number): void {
 		let mouse = this._mouse;
-
-		if (mouse === null) {
+		if (mouse === null)
 			return
-		}
-        
-        mouse!.x = x;
-        mouse!.y = y;
+        mouse.x = x;
+        mouse.y = y;
+		ctx.repaint()
     }
 
     click(ctx: GeneratorContext, x: number, y: number): void {
@@ -32,9 +30,11 @@ export default class MultiPointGenerator extends ObjectGenerator {
 
             let obj = this.newObject(this._points);
             ctx.add(obj);
+            ctx.repaint()
         }
         let point = new Point(x, y);
         this._points.push(point);
         this._mouse = point;
+		ctx.repaint()
     }
 }

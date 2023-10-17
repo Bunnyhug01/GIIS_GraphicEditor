@@ -3,73 +3,34 @@ import { range } from "../../../utils/range";
 import PixelDrawer from "../PixelDrawer";
 import TwoPointDrawer from "../TwoPointDrawer";
 
-
-// export default class BresenhamLineDrawer extends TwoPointDrawer {
-//     draw(drawer: PixelDrawer, point1: Point, point2: Point): void {
-
-//         const x1 = point1.x;
-//         const y1 = point1.y;
+export default class BresenhamLineDrawer extends TwoPointDrawer {
+    draw(ctx: PixelDrawer, point1: Point, point2: Point): void {
+        const x1 = point1.x;
+        const y1 = point1.y;
     
-//         const x2 = point2.x;
-//         const y2 = point2.y;
+        const x2 = point2.x;
+        const y2 = point2.y;
 
-//         if (Math.abs(y2 - y1) < Math.abs(x2 - x1)) {
-//             if (x2 > x1){
-//                 drawLineLow(ctx, x1, y1, x2, y2, pixelSize);
-//             }
-//             else {
-//                 drawLineLow(ctx, x2, y2, x1, y1, pixelSize);
-//             }
-//         }
-//         else {
-//             if (y1 > y2) {
-//                 drawLineHigh(ctx, x2, y2, x1, y1, pixelSize);
-//             }
-//         else {
-//             drawLineHigh(ctx, x1, y1, x2, y2, pixelSize);
-//         }  
-//     }
-//     }
-// }
-
-
-export default function drawLineBresenham(ctx: CanvasRenderingContext2D, begin: number[], end: number[], stroke = 'black', pixelSize:number = 1): number[][] {
-    if (stroke) {
-        ctx.fillStyle = stroke;
-    }
-
-    let coordinates:number[][] = [];
-  
-    const x1:number = Math.floor(begin[0] / pixelSize);
-    const y1:number = Math.floor(begin[1] / pixelSize);
-
-    const x2:number = Math.floor(end[0] / pixelSize);
-    const y2:number = Math.floor(end[1] / pixelSize);
-    
-    if (Math.abs(y2 - y1) < Math.abs(x2 - x1)) {
-        if (x2 > x1){
-            coordinates = drawLineLow(ctx, x1, y1, x2, y2, pixelSize);
+        if (Math.abs(y2 - y1) < Math.abs(x2 - x1)) {
+            if (x2 > x1) {
+                drawLineLow(ctx, point1.x, point1.y, point2.x, point2.y);
+            } else {
+                drawLineLow(ctx, point2.x, point2.y, point1.x, point1.y);
+            }
         }
         else {
-            coordinates = drawLineLow(ctx, x2, y2, x1, y1, pixelSize);
+            if (y1 > y2) {
+                drawLineHigh(ctx, point2.x, point2.y, point1.x, point1.y);
+            } else {
+                drawLineHigh(ctx, point1.x, point1.y, point2.x, point2.y);
+            }  
         }
     }
-    else {
-      if (y1 > y2) {
-        coordinates = drawLineHigh(ctx, x2, y2, x1, y1, pixelSize);
-      }
-      else {
-        coordinates = drawLineHigh(ctx, x1, y1, x2, y2, pixelSize);
-      }  
-    }
-    
-    return coordinates;
 }
 
 // y1 < y2
 // dx < dy
-function drawLineHigh(ctx: CanvasRenderingContext2D, x1:number, y1:number, x2:number, y2:number, pixelSize:number = 1): number[][] {
-    const coordinates:number[][] = [];
+function drawLineHigh(ctx: PixelDrawer, x1:number, y1:number, x2:number, y2:number) {
     
     let dx:number = x2 - x1;
     const dy:number = y2 - y1;
@@ -84,11 +45,10 @@ function drawLineHigh(ctx: CanvasRenderingContext2D, x1:number, y1:number, x2:nu
     let x:number = x1;
 
     range(y1, y2).forEach((y) => {
-        const xCord = Math.floor(x) * pixelSize;
-        const yCord = Math.floor(y) * pixelSize;
+        const xCord = Math.floor(Math.floor(x + .1));
+        const yCord = Math.floor(Math.floor(y+ .1));
 
-        ctx.fillRect(xCord, yCord, pixelSize, pixelSize);
-        coordinates.push([xCord, yCord]);
+        ctx.drawPixel(xCord, yCord)
 
         if (D > 0) {
             x += xi;
@@ -98,13 +58,10 @@ function drawLineHigh(ctx: CanvasRenderingContext2D, x1:number, y1:number, x2:nu
         
     });
 
-    return coordinates;
-
 }
 
 
-function drawLineLow(ctx: CanvasRenderingContext2D, x1:number, y1:number, x2:number, y2:number, pixelSize:number = 1): number[][] {
-    const coordinates:number[][] = [];
+function drawLineLow(ctx: PixelDrawer, x1:number, y1:number, x2:number, y2:number) {
     
     const dx:number = x2 - x1;
     let dy:number = y2 - y1;
@@ -119,11 +76,10 @@ function drawLineLow(ctx: CanvasRenderingContext2D, x1:number, y1:number, x2:num
     let y = y1;
 
     range(x1, x2).forEach((x) => {
-        const xCord = Math.floor(x) * pixelSize;
-        const yCord = Math.floor(y) * pixelSize;
+        const xCord = Math.floor(Math.floor(x + .1));
+        const yCord = Math.floor(Math.floor(y+ .1));
 
-        ctx.fillRect(xCord, yCord, pixelSize, pixelSize);
-        coordinates.push([xCord, yCord]);
+        ctx.drawPixel(xCord, yCord)
 
         if (D > 0) {
             y += yi;
@@ -132,6 +88,4 @@ function drawLineLow(ctx: CanvasRenderingContext2D, x1:number, y1:number, x2:num
         D += 2 * dy;
         
     });
-
-    return coordinates;
 }

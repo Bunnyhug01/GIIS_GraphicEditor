@@ -1,6 +1,7 @@
 import DebugPixelDrawer from "../algorithms/drawer/DebugPixelDrawer";
 import PixelDrawer from "../algorithms/drawer/PixelDrawer";
 import DrawObject from "./DrawObject";
+import Point from "./Point";
 
 export default class DebugDrawObject extends DrawObject {
     
@@ -16,7 +17,7 @@ export default class DebugDrawObject extends DrawObject {
         this._points++
     }
 
-    removePoints() {
+    removePoint() {
         this._points--
     }
 
@@ -30,7 +31,7 @@ export default class DebugDrawObject extends DrawObject {
         this.origin.draw(g)
     }
 
-    iterator() {
-        return this.origin.iterator()
+    getPoints(): Point[] {
+        return this.origin.getPoints()
     }
 }

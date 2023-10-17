@@ -5,8 +5,7 @@ export default function debugGrid(ctx: CanvasRenderingContext2D, width:number, h
 
         ctx.moveTo(0, i);
         ctx.lineTo(width, i);
-
-        ctx.strokeStyle = "#f0f0f0";
-        ctx.stroke();
     }
+    ctx.strokeStyle = "#f0f0f0";
+    ctx.stroke();
 }

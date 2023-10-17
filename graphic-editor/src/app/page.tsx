@@ -45,12 +45,13 @@ import drawParabolaSecond from './algorithms/drawer/Second-order_lines/Parabola_
 import TwoPointGenerator from './generator/TwoPointGenerator';
 import BasePixelDrawer from './algorithms/drawer/BasePixelDrawer';
 import DDALineDrawer from './algorithms/drawer/lines/DDALineDrawer';
-import { GeneratorContext } from './generator/ObjectGenerator';
+import { GeneratorContext, ObjectGenerator } from './generator/ObjectGenerator';
 import DrawObject from './objects/DrawObject';
 import FourPointGenerator from './generator/FourPointGenerator';
 import HermiteDrawer from './algorithms/drawer/curve _lines/HermiteDrawer';
 import BezieDrawer from './algorithms/drawer/curve _lines/BezieDrawer';
-
+import { context } from './main';
+import BresenhamLineDrawer from './algorithms/drawer/lines/BresenhamLineDrawer';
 
 const drawerWidth = 240;
 
@@ -62,21 +63,17 @@ interface Props {
   window?: () => Window;
 }
 
+let generator: ObjectGenerator = new TwoPointGenerator(new BresenhamLineDrawer());
+
+function setGenerator(g: ObjectGenerator) {
+  generator = g
+}
 
 export default function Home(props: Props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
-  const [debug, setDebug] = useState<boolean>(false);
-  const [selectedButton, setSelectedButton] = useState<string>("");
-
-  const [pixelSize, setPixelSize] = useState<number>(1);
   const [color, setColor] = useState<string>("black");
-
-  let clicked: boolean = false;
-  
-  // let generator = new TwoPointGenerator(new DDALineDrawer())
-  let generator = new FourPointGenerator(new BezieDrawer())
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -87,19 +84,24 @@ export default function Home(props: Props) {
       <Toolbar />
       <Divider />
       <List>
-        {['Debug', 'Clear'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton
-              onClick={() => handleClick(text)}
-              >
+        <ListItem key='Debug' disablePadding>
+            <ListItemButton onClick={() => context.changeDebug()}>
               <ListItemIcon>
-                {index % 2 === 0 ? <Grid4x4 /> : <DeleteIcon />}
+                <Grid4x4/>
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary='Debug'/>
             </ListItemButton>
           </ListItem>
-        ))}
 
+          <ListItem key='Clear' disablePadding>
+            <ListItemButton onClick={() => context.clear()}>
+              <ListItemIcon>
+                <DeleteIcon/>
+              </ListItemIcon>
+              <ListItemText primary='Clear'/>
+            </ListItemButton>
+          </ListItem>
+        
         <Accordion>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
@@ -110,29 +112,34 @@ export default function Home(props: Props) {
             <Typography className='ml-8'>Lines</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            {['Line DDA' ,'Bresenham', 'Antialiasing'].map((text, index) => (
-              <ListItem
-                key={text}
-                disablePadding
-              >
-                <ListItemButton onClick={() => {
-                  setSelectedButton(text);
-                  remove();
-                  handleLinesClick();
-                  }}
-                  selected={true ? selectedButton === text : false}
-                >
+              <ListItem key='Line DDA' disablePadding>
+                <ListItemButton onClick={() => setGenerator(new TwoPointGenerator(new DDALineDrawer()))}>
                   <ListItemIcon>
-                    <AutoGraphIcon />
+                    <AutoGraphIcon/>
                   </ListItemIcon>
-                  <ListItemText primary={text} />
+                  <ListItemText primary='Line DDA'/>
                 </ListItemButton>
               </ListItem>
-            ))}
+              <ListItem key='Bresenham' disablePadding>
+                <ListItemButton onClick={() => setGenerator(new TwoPointGenerator(new BresenhamLineDrawer()))}>
+                  <ListItemIcon>
+                    <AutoGraphIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary='Bresenham'/>
+                </ListItemButton>
+              </ListItem>
+              {/* <ListItem key='Antialiasing' disablePadding>
+                <ListItemButton onClick={() => generator = new TwoPointGenerator(new DDALineDrawer())}>
+                  <ListItemIcon>
+                    <AutoGraphIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary='Antialiasing'/>
+                </ListItemButton>
+              </ListItem> */}
           </AccordionDetails>
         </Accordion>
 
-        <Accordion>
+        {/* <Accordion>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
@@ -175,9 +182,9 @@ export default function Home(props: Props) {
               <ListItemText primary={text} />
             </ListItemButton>
           </ListItem>
-        ))}
-      </List>
-      <List className='items-center'>
+        ))}*/}
+      </List> 
+      {/* <List className='items-center'>
         <Typography>Pixel Size</Typography>
         <Slider
           className='ml-5 w-[80%]'
@@ -195,7 +202,7 @@ export default function Home(props: Props) {
             onChange={(color) => setColor(color.target.value)}
           />
         </div>
-      </List>
+      </List> */}
     </div>
   );
   
@@ -209,238 +216,45 @@ export default function Home(props: Props) {
       y: evt.clientY - rect.top
     };
   }
-  
 
-  function remove() {
-    const canvas = document.querySelector('canvas') as HTMLCanvasElement;
-
-    clicked = true;
-    if (clicked === true) {
-      canvas.replaceWith(canvas.cloneNode(true));
-    }
-  }
-
-
-  function handleSlider(value:number | number[]) {
+  function handleSlider(value: number | number[]) {
     const size = Array.isArray(value) ? value[0] : value;
-    setPixelSize(size);
+    context.setPixelSize(size);
   }
 
-
-  const debugListener = (evt: KeyboardEvent, ctx: CanvasRenderingContext2D, coordinates: number[][], coordinatesPrev:number[][] = [], color:string = 'black') => {
-    ctx.fillStyle = color;
-
-    if (evt.key === 'ArrowRight' && coordinates.length !== 0) {
-
-      if (coordinates[0].length === 3) {
-        ctx.globalAlpha = coordinates[0][2];
-      }
-
-      ctx.fillRect(coordinates[0][0], coordinates[0][1], pixelSize, pixelSize);
-      coordinatesPrev.unshift(coordinates.shift()!);
-    }
-
-    if (evt.key === 'ArrowLeft' && coordinatesPrev.length !== 0) {
-
-      if (coordinatesPrev[0].length === 3) {
-        ctx.globalAlpha = coordinatesPrev[0][2];
-      }
-
-      ctx.clearRect(coordinatesPrev[0][0], coordinatesPrev[0][1], pixelSize, pixelSize);
-      coordinates.unshift(coordinatesPrev.shift()!);
-    }
-    
-  }
-
-
-  class JSGeneratorContext extends GeneratorContext {
-    
-    obj: DrawObject[] = []
-    debug: boolean = false
-
-    constructor() {
-      super()
-    }
-
-    add(obj: DrawObject): void {
-      this.obj.push(obj)  
-    }
-
-    remove(obj: DrawObject): void {
-      const index = this.obj.indexOf(obj)
-      this.obj.splice(index, 1)
-    }
-
-    isDebug(): boolean {
-      return this.debug      
-    }
-
-  }
-
-  const context = new JSGeneratorContext()
-
-  function paint() {
-    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const pixelDrawer = new BasePixelDrawer(ctx)
-
-    for (const e of context.obj) {
-      e.draw(pixelDrawer)
-    }
-  }
-
-  function handleLinesClick() {
+  useEffect(() => {
     const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 
     if (canvas.getContext) {
       const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
       const clickListener = (evt: MouseEvent) => {
-        const mousePos = getMousePos(canvas, evt);
-
-        generator.click(context, mousePos.x, mousePos.y)
-        paint()
-
+        const mousePos = getMousePos(canvas, evt)
+        generator.click(context, Math.floor(mousePos.x / context.pixelSize), Math.floor(mousePos.y / context.pixelSize))
       }
 
       const moveListener = (evt: MouseEvent) => {
-        const mousePos = getMousePos(canvas, evt);
-
-        generator.move(context, mousePos.x, mousePos.y)
-        paint()
+        const mousePos = getMousePos(canvas, evt)
+        generator.move(context, Math.floor(mousePos.x / context.pixelSize), Math.floor(mousePos.y / context.pixelSize))
       }
 
       canvas.addEventListener('click', clickListener);
       canvas.addEventListener('mousemove', moveListener);
-    }
-  }
-
-
-  function handleClick(buttonType:string) {
-    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-
-    if (canvas.getContext) {
-      const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-
-      if (buttonType === 'Clear') {
-        context.obj = []
-        paint()
-        // ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
       
-      if (buttonType === 'Debug') {
-        setDebug(!debug);
-        remove();
-      }
-
+      document.addEventListener('keydown', (event) => {
+        switch(event.code) {
+          case 'KeyW': 
+            context.addDebugPoint()
+            context.repaint()
+          break;
+          case 'KeyS': 
+            context.removeDebugPoint()
+            context.repaint()
+          break;
+        }
+      });
     }
-
-  }
-
-  // function handleLinesClick(buttonType:string) {
-  //   const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-
-  //   if (canvas.getContext) {
-  //     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-        
-  //     let pointsCount: number = 0;
-  //     let startPoints:number[] = [];
-  //     let endPoints:number[] = [];
-
-  //     const listener = (evt: MouseEvent) => {
-  //       const mousePos = getMousePos(canvas, evt);
-  //       pointsCount++;
-
-  //       if (pointsCount === 1) {
-  //         startPoints = [mousePos.x, mousePos.y];
-  //       }
-  //       else if (pointsCount === 2) {
-  //         endPoints = [mousePos.x, mousePos.y];
-          
-  //         if (debug) {
-  //           let coordinates:number[][] = [];
-  //           const coordinatesPrev:number[][] = [];
-
-  //           const debugColor = 'rgba(255, 255, 255, 0)';
-
-  //           if (buttonType === 'Line DDA') {
-  //             coordinates = drawLineDDA(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
-  //           }
-  //           else if (buttonType === 'Bresenham') {
-  //             coordinates = drawLineBresenham(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
-  //           }
-  //           else if (buttonType === 'Antialiasing') {
-  //             coordinates = drawLineAntialiasing(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
-  //           }
-  //           else if (buttonType === 'Circle') {
-  //             coordinates = drawCircle(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
-  //           }
-  //           else if (buttonType === 'Ellipse') {
-  //             coordinates = drawEllipse(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
-  //           }
-  //           else if (buttonType === 'Parabola') {
-  //             // coordinates = drawParabola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
-  //             coordinates = drawParabolaSecond(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
-  //           }
-  //           else if (buttonType === 'Hyperbola') {
-  //             // coordinates = drawHyperbola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
-  //             coordinates = drawHyperbolaSecond(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
-  //           }
-
-
-  //           document.addEventListener('keydown', (evt) => {debugListener(evt, ctx, coordinates, coordinatesPrev, color)});
-  //         } else {
-
-  //           if (buttonType === 'Line DDA') {
-  //             drawLineDDA(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
-  //           }
-  //           else if (buttonType === 'Bresenham') {
-  //             drawLineBresenham(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
-  //           }
-  //           else if (buttonType === 'Antialiasing') {
-  //             drawLineAntialiasing(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
-  //           }
-  //           else if (buttonType === 'Circle') {
-  //             drawCircle(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
-  //           }
-  //           else if (buttonType === 'Ellipse') {
-  //             drawEllipse(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
-  //           }
-  //           else if (buttonType === 'Parabola') {
-  //             // drawParabola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
-  //             drawParabolaSecond(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
-  //           }
-  //           else if (buttonType === 'Hyperbola') {
-  //             //drawHyperbola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
-  //             drawHyperbolaSecond(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
-  //           }
-            
-  //         }
-            
-  //         pointsCount = 0;
-  //       }
-  //     }
-  //     canvas.addEventListener('click', listener);
-  //   }
-  //   clicked = false;
-  // }
-
-  
-  useEffect(() => {
-    const canvas = document.getElementById('canvas2') as HTMLCanvasElement;
-    canvas.replaceWith(canvas.cloneNode(true));
-
-    const secondCanvas = document.getElementById('canvas2') as HTMLCanvasElement;
-    const secondCtx = secondCanvas.getContext('2d') as CanvasRenderingContext2D;
-
-    if (debug) {
-      debugGrid(secondCtx, secondCanvas.width, secondCanvas.height, pixelSize);
-    }
-
-  }, [debug, pixelSize]);
-
+  })
 
   return (
     <Box sx={{ display: 'flex' }}>

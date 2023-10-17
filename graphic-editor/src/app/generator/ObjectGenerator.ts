@@ -17,4 +17,10 @@ export class GeneratorContext {
 
     add(obj: DrawObject) {}
     remove(obj: DrawObject) {}
+
+    repaint() {}
+
+    getObjects(): DrawObject[] {
+        return []
+    }
 }

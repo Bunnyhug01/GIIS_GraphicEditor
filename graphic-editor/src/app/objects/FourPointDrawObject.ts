@@ -1,6 +1,5 @@
 import FourPointDrawer from "../algorithms/drawer/FourPointDrawer"
 import PixelDrawer from "../algorithms/drawer/PixelDrawer"
-import makeIterator from "../utils/iterator"
 import DrawObject from "./DrawObject"
 import Point from "./Point"
 
@@ -28,7 +27,8 @@ export default class FourPointDrawObject extends DrawObject {
         this.lines.draw(drawer, this.point1, this.point2, this.point3, this.point4)
     }
 
-    iterator() {
-        return makeIterator([this.point1, this.point2, this.point3, this.point4])
+    getPoints(): Point[] {
+        return [this.point1, this.point2, this.point3, this.point4]
     }
+
 }

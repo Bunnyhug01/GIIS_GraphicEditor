@@ -6,7 +6,7 @@ export default class BasePixelDrawer extends PixelDrawer {
     stroke:string;
     pixelSize:number;
 
-    constructor(ctx: CanvasRenderingContext2D, stroke:string = 'black', pixelSize:number = 1){
+    constructor(ctx: CanvasRenderingContext2D, pixelSize:number = 1, stroke:string = 'black'){
         super();
         this.ctx = ctx;
         this.stroke = stroke;
