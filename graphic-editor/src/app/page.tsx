@@ -34,14 +34,22 @@ import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
 
 import { Slider } from '@mui/material';
 
-import drawLineDDA from './algorithms/lines/DDA_Algorithm';
-import drawLineBresenham from './algorithms/lines/Bresenham_Algorithm';
-import drawLineAntialiasing from './algorithms/lines/Antialiasing_Algorithm';
+// import drawLineDDA from './algorithms/lines/DDA_Algorithm';
+import drawLineBresenham from './algorithms/drawer/lines/BresenhamLineDrawer';
+import drawLineAntialiasing from './algorithms/drawer/lines/AntialiasingLineDrawer';
 import debugGrid from './algorithms/debugGrid';
-import drawCircle from './algorithms/Second-order_lines/Circle_Algorithm';
-import drawEllipse from './algorithms/Second-order_lines/Ellipse_Algorithm';
-import drawHyperbolaSecond from './algorithms/Second-order_lines/Hyperbola_Second_Algorithm';
-import drawParabolaSecond from './algorithms/Second-order_lines/Parabola_Second_Algorithm';
+import drawCircle from './algorithms/drawer/Second-order_lines/Circle_Algorithm';
+import drawEllipse from './algorithms/drawer/Second-order_lines/Ellipse_Algorithm';
+import drawHyperbolaSecond from './algorithms/drawer/Second-order_lines/Hyperbola_Second_Algorithm';
+import drawParabolaSecond from './algorithms/drawer/Second-order_lines/Parabola_Second_Algorithm';
+import TwoPointGenerator from './generator/TwoPointGenerator';
+import BasePixelDrawer from './algorithms/drawer/BasePixelDrawer';
+import DDALineDrawer from './algorithms/drawer/lines/DDALineDrawer';
+import { GeneratorContext } from './generator/ObjectGenerator';
+import DrawObject from './objects/DrawObject';
+import FourPointGenerator from './generator/FourPointGenerator';
+import HermiteDrawer from './algorithms/drawer/curve _lines/HermiteDrawer';
+import BezieDrawer from './algorithms/drawer/curve _lines/BezieDrawer';
 
 
 const drawerWidth = 240;
@@ -65,7 +73,10 @@ export default function Home(props: Props) {
   const [pixelSize, setPixelSize] = useState<number>(1);
   const [color, setColor] = useState<string>("black");
 
-  let clicked: boolean = false; 
+  let clicked: boolean = false;
+  
+  // let generator = new TwoPointGenerator(new DDALineDrawer())
+  let generator = new FourPointGenerator(new BezieDrawer())
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -107,7 +118,7 @@ export default function Home(props: Props) {
                 <ListItemButton onClick={() => {
                   setSelectedButton(text);
                   remove();
-                  handleLinesClick(text);
+                  handleLinesClick();
                   }}
                   selected={true ? selectedButton === text : false}
                 >
@@ -139,7 +150,7 @@ export default function Home(props: Props) {
                 <ListItemButton onClick={() => {
                   setSelectedButton(text);
                   remove();
-                  handleLinesClick(text);
+                  // handleLinesClick(text);
                   }}
                   selected={true ? selectedButton === text : false}
                 >
@@ -216,26 +227,6 @@ export default function Home(props: Props) {
   }
 
 
-  function handleClick(buttonType:string) {
-    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-
-    if (canvas.getContext) {
-      const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-
-      if (buttonType === 'Clear') {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
-      
-      if (buttonType === 'Debug') {
-        setDebug(!debug);
-        remove();
-      }
-
-    }
-
-  }
-
-
   const debugListener = (evt: KeyboardEvent, ctx: CanvasRenderingContext2D, coordinates: number[][], coordinatesPrev:number[][] = [], color:string = 'black') => {
     ctx.fillStyle = color;
 
@@ -262,93 +253,179 @@ export default function Home(props: Props) {
   }
 
 
-  function handleLinesClick(buttonType:string) {
+  class JSGeneratorContext extends GeneratorContext {
+    
+    obj: DrawObject[] = []
+    debug: boolean = false
+
+    constructor() {
+      super()
+    }
+
+    add(obj: DrawObject): void {
+      this.obj.push(obj)  
+    }
+
+    remove(obj: DrawObject): void {
+      const index = this.obj.indexOf(obj)
+      this.obj.splice(index, 1)
+    }
+
+    isDebug(): boolean {
+      return this.debug      
+    }
+
+  }
+
+  const context = new JSGeneratorContext()
+
+  function paint() {
+    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const pixelDrawer = new BasePixelDrawer(ctx)
+
+    for (const e of context.obj) {
+      e.draw(pixelDrawer)
+    }
+  }
+
+  function handleLinesClick() {
     const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 
     if (canvas.getContext) {
       const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-        
-      let pointsCount: number = 0;
-      let startPoints:number[] = [];
-      let endPoints:number[] = [];
 
-      const listener = (evt: MouseEvent) => {
+      const clickListener = (evt: MouseEvent) => {
         const mousePos = getMousePos(canvas, evt);
-        pointsCount++;
 
-        if (pointsCount === 1) {
-          startPoints = [mousePos.x, mousePos.y];
-        }
-        else if (pointsCount === 2) {
-          endPoints = [mousePos.x, mousePos.y];
-          
-          if (debug) {
-            let coordinates:number[][] = [];
-            const coordinatesPrev:number[][] = [];
+        generator.click(context, mousePos.x, mousePos.y)
+        paint()
 
-            const debugColor = 'rgba(255, 255, 255, 0)';
-
-            if (buttonType === 'Line DDA') {
-              coordinates = drawLineDDA(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
-            }
-            else if (buttonType === 'Bresenham') {
-              coordinates = drawLineBresenham(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
-            }
-            else if (buttonType === 'Antialiasing') {
-              coordinates = drawLineAntialiasing(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
-            }
-            else if (buttonType === 'Circle') {
-              coordinates = drawCircle(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
-            }
-            else if (buttonType === 'Ellipse') {
-              coordinates = drawEllipse(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
-            }
-            else if (buttonType === 'Parabola') {
-              // coordinates = drawParabola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
-              coordinates = drawParabolaSecond(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
-            }
-            else if (buttonType === 'Hyperbola') {
-              // coordinates = drawHyperbola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
-              coordinates = drawHyperbolaSecond(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
-            }
-
-
-            document.addEventListener('keydown', (evt) => {debugListener(evt, ctx, coordinates, coordinatesPrev, color)});
-          } else {
-
-            if (buttonType === 'Line DDA') {
-              drawLineDDA(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
-            }
-            else if (buttonType === 'Bresenham') {
-              drawLineBresenham(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
-            }
-            else if (buttonType === 'Antialiasing') {
-              drawLineAntialiasing(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
-            }
-            else if (buttonType === 'Circle') {
-              drawCircle(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
-            }
-            else if (buttonType === 'Ellipse') {
-              drawEllipse(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
-            }
-            else if (buttonType === 'Parabola') {
-              // drawParabola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
-              drawParabolaSecond(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
-            }
-            else if (buttonType === 'Hyperbola') {
-              //drawHyperbola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
-              drawHyperbolaSecond(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
-            }
-            
-          }
-            
-          pointsCount = 0;
-        }
       }
-      canvas.addEventListener('click', listener);
+
+      const moveListener = (evt: MouseEvent) => {
+        const mousePos = getMousePos(canvas, evt);
+
+        generator.move(context, mousePos.x, mousePos.y)
+        paint()
+      }
+
+      canvas.addEventListener('click', clickListener);
+      canvas.addEventListener('mousemove', moveListener);
     }
-    clicked = false;
   }
+
+
+  function handleClick(buttonType:string) {
+    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+
+    if (canvas.getContext) {
+      const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+      if (buttonType === 'Clear') {
+        context.obj = []
+        paint()
+        // ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      
+      if (buttonType === 'Debug') {
+        setDebug(!debug);
+        remove();
+      }
+
+    }
+
+  }
+
+  // function handleLinesClick(buttonType:string) {
+  //   const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+
+  //   if (canvas.getContext) {
+  //     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+        
+  //     let pointsCount: number = 0;
+  //     let startPoints:number[] = [];
+  //     let endPoints:number[] = [];
+
+  //     const listener = (evt: MouseEvent) => {
+  //       const mousePos = getMousePos(canvas, evt);
+  //       pointsCount++;
+
+  //       if (pointsCount === 1) {
+  //         startPoints = [mousePos.x, mousePos.y];
+  //       }
+  //       else if (pointsCount === 2) {
+  //         endPoints = [mousePos.x, mousePos.y];
+          
+  //         if (debug) {
+  //           let coordinates:number[][] = [];
+  //           const coordinatesPrev:number[][] = [];
+
+  //           const debugColor = 'rgba(255, 255, 255, 0)';
+
+  //           if (buttonType === 'Line DDA') {
+  //             coordinates = drawLineDDA(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
+  //           }
+  //           else if (buttonType === 'Bresenham') {
+  //             coordinates = drawLineBresenham(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
+  //           }
+  //           else if (buttonType === 'Antialiasing') {
+  //             coordinates = drawLineAntialiasing(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
+  //           }
+  //           else if (buttonType === 'Circle') {
+  //             coordinates = drawCircle(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
+  //           }
+  //           else if (buttonType === 'Ellipse') {
+  //             coordinates = drawEllipse(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
+  //           }
+  //           else if (buttonType === 'Parabola') {
+  //             // coordinates = drawParabola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
+  //             coordinates = drawParabolaSecond(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
+  //           }
+  //           else if (buttonType === 'Hyperbola') {
+  //             // coordinates = drawHyperbola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
+  //             coordinates = drawHyperbolaSecond(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], debugColor, pixelSize);
+  //           }
+
+
+  //           document.addEventListener('keydown', (evt) => {debugListener(evt, ctx, coordinates, coordinatesPrev, color)});
+  //         } else {
+
+  //           if (buttonType === 'Line DDA') {
+  //             drawLineDDA(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
+  //           }
+  //           else if (buttonType === 'Bresenham') {
+  //             drawLineBresenham(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
+  //           }
+  //           else if (buttonType === 'Antialiasing') {
+  //             drawLineAntialiasing(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
+  //           }
+  //           else if (buttonType === 'Circle') {
+  //             drawCircle(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
+  //           }
+  //           else if (buttonType === 'Ellipse') {
+  //             drawEllipse(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
+  //           }
+  //           else if (buttonType === 'Parabola') {
+  //             // drawParabola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
+  //             drawParabolaSecond(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
+  //           }
+  //           else if (buttonType === 'Hyperbola') {
+  //             //drawHyperbola(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
+  //             drawHyperbolaSecond(ctx, [startPoints[0], startPoints[1]], [endPoints[0], endPoints[1]], color, pixelSize);
+  //           }
+            
+  //         }
+            
+  //         pointsCount = 0;
+  //       }
+  //     }
+  //     canvas.addEventListener('click', listener);
+  //   }
+  //   clicked = false;
+  // }
 
   
   useEffect(() => {

@@ -1,4 +1,36 @@
-import range from "../range";
+import Point from "@/app/objects/Point";
+import { range } from "../../../utils/range";
+import PixelDrawer from "../PixelDrawer";
+import TwoPointDrawer from "../TwoPointDrawer";
+
+
+// export default class BresenhamLineDrawer extends TwoPointDrawer {
+//     draw(drawer: PixelDrawer, point1: Point, point2: Point): void {
+
+//         const x1 = point1.x;
+//         const y1 = point1.y;
+    
+//         const x2 = point2.x;
+//         const y2 = point2.y;
+
+//         if (Math.abs(y2 - y1) < Math.abs(x2 - x1)) {
+//             if (x2 > x1){
+//                 drawLineLow(ctx, x1, y1, x2, y2, pixelSize);
+//             }
+//             else {
+//                 drawLineLow(ctx, x2, y2, x1, y1, pixelSize);
+//             }
+//         }
+//         else {
+//             if (y1 > y2) {
+//                 drawLineHigh(ctx, x2, y2, x1, y1, pixelSize);
+//             }
+//         else {
+//             drawLineHigh(ctx, x1, y1, x2, y2, pixelSize);
+//         }  
+//     }
+//     }
+// }
 
 
 export default function drawLineBresenham(ctx: CanvasRenderingContext2D, begin: number[], end: number[], stroke = 'black', pixelSize:number = 1): number[][] {
