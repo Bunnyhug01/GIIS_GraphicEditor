@@ -22,13 +22,13 @@ export default class BSplinesDrawer extends FourPointDrawer {
         ])
 
         matrixData = multiply(MATRIX, matrixData)
-        for (let t of rangeStep(0, 1, 0.0001)) {
+        for (let t of rangeStep(0, 1, 0.01)) {
             let tMatrix = matrix([
-                [t ** 3, t ** 2, t, 1],
+                [t * t * t, t * t, t, 1],
             ])
             
             tMatrix = multiply(tMatrix, matrixData)
-            drawer.drawPixel(tMatrix.get([0, 0]), tMatrix.get([0, 1]))
+            drawer.drawPixel(Math.floor(tMatrix.get([0, 0])), Math.floor(tMatrix.get([0, 1])))
         }
     }
 

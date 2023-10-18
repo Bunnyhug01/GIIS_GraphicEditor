@@ -54,6 +54,11 @@ import BezieDrawer from './algorithms/drawer/curve _lines/BezieDrawer';
 import { context } from './main';
 import BresenhamLineDrawer from './algorithms/drawer/lines/BresenhamLineDrawer';
 import MouseMove from './generator/MouseMove';
+import AntialiasingLineDrawer from './algorithms/drawer/lines/AntialiasingLineDrawer';
+import MultiPointGenerator from './generator/MultiPointGenerator';
+import SpliteToFour from './algorithms/drawer/curve _lines/SpliteToFour';
+import BSplinesDrawer from './algorithms/drawer/curve _lines/BSplinesDrawer';
+import MultiPointGeneratorImpl from './generator/MultiPointGeneratorImpl';
 
 const drawerWidth = 240;
 
@@ -139,16 +144,55 @@ export default function Home(props: Props) {
                   <ListItemText primary='Bresenham'/>
                 </ListItemButton>
               </ListItem>
-              {/* <ListItem key='Antialiasing' disablePadding>
-                <ListItemButton onClick={() => generator = new TwoPointGenerator(new DDALineDrawer())}>
+              <ListItem key='Antialiasing' disablePadding>
+                <ListItemButton onClick={() => setGenerator(new TwoPointGenerator(new AntialiasingLineDrawer()))}>
                   <ListItemIcon>
                     <AutoGraphIcon/>
                   </ListItemIcon>
                   <ListItemText primary='Antialiasing'/>
                 </ListItemButton>
-              </ListItem> */}
+              </ListItem>
           </AccordionDetails>
         </Accordion>
+
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <BorderColorIcon />
+            <Typography className='ml-8'>Curve</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+              <ListItem key='Ermitov' disablePadding>
+                <ListItemButton onClick={() => setGenerator(new FourPointGenerator(new HermiteDrawer()))}>
+                  <ListItemIcon>
+                    <AutoGraphIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary='Ermitov'/>
+                </ListItemButton>
+              </ListItem>
+              <ListItem key='Bezie' disablePadding>
+                <ListItemButton onClick={() => setGenerator(new FourPointGenerator(new BezieDrawer()))}>
+                  <ListItemIcon>
+                    <AutoGraphIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary='Bezie'/>
+                </ListItemButton>
+              </ListItem>
+              <ListItem key='B-Spline' disablePadding>
+                <ListItemButton onClick={() => setGenerator(new MultiPointGeneratorImpl(new SpliteToFour(new BSplinesDrawer())))}>
+                  <ListItemIcon>
+                    <AutoGraphIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary='B-Spline'/>
+                </ListItemButton>
+              </ListItem>
+          </AccordionDetails>
+        </Accordion>
+
+
 
         {/* <Accordion>
           <AccordionSummary
@@ -180,21 +224,10 @@ export default function Home(props: Props) {
               </ListItem>
             ))}
           </AccordionDetails>
-        </Accordion>
+        </Accordion>  */}
       </List>
       <Divider />
-      <List>
-        {[].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}*/}
-      </List> 
+             
       {/* <List className='items-center'>
         <Typography>Pixel Size</Typography>
         <Slider
@@ -251,6 +284,16 @@ export default function Home(props: Props) {
 
       canvas.addEventListener('click', clickListener);
       canvas.addEventListener('mousemove', moveListener);
+
+      canvas.addEventListener('mousedown', (evt) => {
+        const mousePos = getMousePos(canvas, evt)
+        generator.press(context, Math.floor(mousePos.x / context.pixelSize), Math.floor(mousePos.y / context.pixelSize))  
+      });
+
+      canvas.addEventListener('mouseup', (evt) => {
+        const mousePos = getMousePos(canvas, evt)
+        generator.release(context, Math.floor(mousePos.x / context.pixelSize), Math.floor(mousePos.y / context.pixelSize))  
+      });
       
       document.addEventListener('keydown', (event) => {
         switch(event.code) {
@@ -261,6 +304,9 @@ export default function Home(props: Props) {
           case 'KeyS': 
             context.removeDebugPoint()
             context.repaint()
+          break;
+          case 'KeyE': 
+            generator.end(context)
           break;
         }
       });

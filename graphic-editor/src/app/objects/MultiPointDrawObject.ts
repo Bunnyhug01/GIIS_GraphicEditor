@@ -1,6 +1,5 @@
 import MultiPointDrawer from "../algorithms/drawer/MultiPointDrawer"
 import PixelDrawer from "../algorithms/drawer/PixelDrawer"
-import makeIterator from "../utils/arrays"
 import DrawObject from "./DrawObject"
 import Point from "./Point"
 
@@ -19,7 +18,8 @@ export default class MultiPointDrawObject extends DrawObject {
         this.drawer.draw(drawer, this.points)
     }
 
-    iterator() {
-        return makeIterator(this.points)
+    getPoints(): Point[] {
+        return points
     }
+
 }
