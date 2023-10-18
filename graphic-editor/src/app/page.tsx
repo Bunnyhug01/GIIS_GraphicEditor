@@ -19,6 +19,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Grid4x4 from '@mui/icons-material/Grid4x4';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AnimationIcon from '@mui/icons-material/Animation';
+import PanToolIcon from '@mui/icons-material/PanTool';
 
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -52,6 +53,7 @@ import HermiteDrawer from './algorithms/drawer/curve _lines/HermiteDrawer';
 import BezieDrawer from './algorithms/drawer/curve _lines/BezieDrawer';
 import { context } from './main';
 import BresenhamLineDrawer from './algorithms/drawer/lines/BresenhamLineDrawer';
+import MouseMove from './generator/MouseMove';
 
 const drawerWidth = 240;
 
@@ -90,6 +92,15 @@ export default function Home(props: Props) {
                 <Grid4x4/>
               </ListItemIcon>
               <ListItemText primary='Debug'/>
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem key='Move points' disablePadding>
+            <ListItemButton onClick={() => setGenerator(new MouseMove())}>
+              <ListItemIcon>
+                <PanToolIcon/>
+              </ListItemIcon>
+              <ListItemText primary='Move points'/>
             </ListItemButton>
           </ListItem>
 
