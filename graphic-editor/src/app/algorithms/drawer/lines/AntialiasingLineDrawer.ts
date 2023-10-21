@@ -3,6 +3,7 @@ import { range } from "../../../utils/range";
 import PixelDrawer from "../PixelDrawer";
 import TwoPointDrawer from "../TwoPointDrawer";
 
+
 export default class AntialiasingLineDrawer extends TwoPointDrawer {
     draw(ctx: PixelDrawer, point1: Point, point2: Point) {
         const x1 = point1.x
@@ -29,6 +30,7 @@ export default class AntialiasingLineDrawer extends TwoPointDrawer {
     }
 }
 
+
 function drawLineHigh(ctx: PixelDrawer, x1:number, y1:number, x2:number, y2:number) {
 	const dx = x2 - x1 + .0;
 	const dy = y2 - y1 + .0;
@@ -50,6 +52,7 @@ function drawLineHigh(ctx: PixelDrawer, x1:number, y1:number, x2:number, y2:numb
     });
 }
 
+
 function drawLineLow(ctx: PixelDrawer, x1:number, y1:number, x2:number, y2:number) {
 	const dx = x2 - x1 + .0;
 	const dy = y2 - y1 + .0;
@@ -69,6 +72,7 @@ function drawLineLow(ctx: PixelDrawer, x1:number, y1:number, x2:number, y2:numbe
         intery += gradient;
     });
 }
+
 
 const ipart = (x: number): number => (Math.floor(Math.floor(x) + .1));
 const fpart = (x: number): number => x - ipart(x);

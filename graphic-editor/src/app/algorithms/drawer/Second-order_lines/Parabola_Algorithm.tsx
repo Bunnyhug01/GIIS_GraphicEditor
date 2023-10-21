@@ -54,6 +54,7 @@ export default function drawParabola(ctx: CanvasRenderingContext2D, center: numb
     return coordinates;
 }
 
+
 function pixel4 (ctx: CanvasRenderingContext2D, x:number, y:number, _x:number, _y:number, pixelSize:number = 1): number[][] {
     const coordinates:number[][] = [];
     

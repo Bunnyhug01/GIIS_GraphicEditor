@@ -4,12 +4,14 @@ import Point from "@/app/objects/Point";
 import PixelDrawer from "../PixelDrawer";
 import { rangeStep } from "../../../utils/range";
 
+
 const MATRIX = multiply(matrix([
     [-1.0, 3.0, -3.0, 1.0],
     [3.0, -6.0, 3.0, 0.0],
     [-3.0, 0.0, 3.0, 0.0],
     [1.0, 4.0, 1.0, 0.0],
 ]), 1.0 / 6);
+
 
 export default class BSplinesDrawer extends FourPointDrawer {
 

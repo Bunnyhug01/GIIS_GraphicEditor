@@ -1,5 +1,3 @@
-
-
 export function range(start:number, end:number): number[] {
     const result = [];
     for (let t = start; t <= end; t ++) {

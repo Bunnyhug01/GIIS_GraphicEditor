@@ -3,6 +3,7 @@ import MultiPointDrawer from "../MultiPointDrawer";
 import PixelDrawer from "../PixelDrawer";
 import FourPointDrawer from "../FourPointDrawer";
 
+
 export default class SpliteToFour extends MultiPointDrawer {
 
     origin: FourPointDrawer

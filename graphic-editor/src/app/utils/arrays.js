@@ -1,4 +1,3 @@
-
 Array.prototype.extremumBy = function(pluck, extremum) {
 	return this.reduce(function(best, next) {
 		var pair = [ pluck(next), next ];
@@ -11,6 +10,7 @@ Array.prototype.extremumBy = function(pluck, extremum) {
 		}
 	},null)[1];
 	}
+
 	
 export function minBy(array, fn) { 
 	return array.extremumBy(fn, Math.min); 

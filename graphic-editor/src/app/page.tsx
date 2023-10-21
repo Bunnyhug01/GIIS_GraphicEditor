@@ -28,26 +28,13 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
 
-import { Slider } from '@mui/material';
+import { Collapse, Slider } from '@mui/material';
 
-// import drawLineDDA from './algorithms/lines/DDA_Algorithm';
-import drawLineBresenham from './algorithms/drawer/lines/BresenhamLineDrawer';
-import drawLineAntialiasing from './algorithms/drawer/lines/AntialiasingLineDrawer';
-import debugGrid from './algorithms/debugGrid';
-import drawCircle from './algorithms/drawer/Second-order_lines/Circle_Algorithm';
-import drawEllipse from './algorithms/drawer/Second-order_lines/Ellipse_Algorithm';
-import drawHyperbolaSecond from './algorithms/drawer/Second-order_lines/Hyperbola_Second_Algorithm';
-import drawParabolaSecond from './algorithms/drawer/Second-order_lines/Parabola_Second_Algorithm';
 import TwoPointGenerator from './generator/TwoPointGenerator';
-import BasePixelDrawer from './algorithms/drawer/BasePixelDrawer';
 import DDALineDrawer from './algorithms/drawer/lines/DDALineDrawer';
-import { GeneratorContext, ObjectGenerator } from './generator/ObjectGenerator';
-import DrawObject from './objects/DrawObject';
+import { ObjectGenerator } from './generator/ObjectGenerator';
 import FourPointGenerator from './generator/FourPointGenerator';
 import HermiteDrawer from './algorithms/drawer/curve _lines/HermiteDrawer';
 import BezieDrawer from './algorithms/drawer/curve _lines/BezieDrawer';
@@ -55,10 +42,14 @@ import { context } from './main';
 import BresenhamLineDrawer from './algorithms/drawer/lines/BresenhamLineDrawer';
 import MouseMove from './generator/MouseMove';
 import AntialiasingLineDrawer from './algorithms/drawer/lines/AntialiasingLineDrawer';
-import MultiPointGenerator from './generator/MultiPointGenerator';
 import SpliteToFour from './algorithms/drawer/curve _lines/SpliteToFour';
 import BSplinesDrawer from './algorithms/drawer/curve _lines/BSplinesDrawer';
 import MultiPointGeneratorImpl from './generator/MultiPointGeneratorImpl';
+import { ExpandLess, ExpandMore, StarBorder } from '@mui/icons-material';
+import CircleDrawer from './algorithms/drawer/Second-order_lines/CircleDrawer';
+import EllipseDrawer from './algorithms/drawer/Second-order_lines/EllipseDrawer';
+import ParabolaDrawer from './algorithms/drawer/Second-order_lines/ParabolaDrawer';
+import HyperbolaDrawer from './algorithms/drawer/Second-order_lines/HyperbolaDrawer';
 
 const drawerWidth = 240;
 
@@ -70,13 +61,16 @@ interface Props {
   window?: () => Window;
 }
 
-let generator: ObjectGenerator = new TwoPointGenerator(new BresenhamLineDrawer());
+let generator: ObjectGenerator;
+
 
 function setGenerator(g: ObjectGenerator) {
   generator = g
 }
 
+
 export default function Home(props: Props) {
+
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -85,6 +79,26 @@ export default function Home(props: Props) {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+  
+
+  const [open, setOpen] = React.useState("");
+
+  const handleCollapseClick = (item: string) => {
+    if (open === item) {
+      setOpen("");
+    } else {
+      setOpen(item);
+    }
+  };
+
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
+  const handleListItemClick = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    index: number,
+  ) => {
+    setSelectedIndex(index);
+  };
 
   const drawer = (
     <div>
@@ -92,7 +106,13 @@ export default function Home(props: Props) {
       <Divider />
       <List>
         <ListItem key='Debug' disablePadding>
-            <ListItemButton onClick={() => context.changeDebug()}>
+            <ListItemButton 
+              selected={selectedIndex === 0}
+              onClick={(event) => {
+                context.changeDebug()
+                handleListItemClick(event, 0)
+              }}
+            >
               <ListItemIcon>
                 <Grid4x4/>
               </ListItemIcon>
@@ -101,7 +121,13 @@ export default function Home(props: Props) {
           </ListItem>
 
           <ListItem key='Move points' disablePadding>
-            <ListItemButton onClick={() => setGenerator(new MouseMove())}>
+            <ListItemButton
+              selected={selectedIndex === 1}
+              onClick={(event) => {
+                setGenerator(new MouseMove())
+                handleListItemClick(event, 1)
+              }}
+            >
               <ListItemIcon>
                 <PanToolIcon/>
               </ListItemIcon>
@@ -117,116 +143,177 @@ export default function Home(props: Props) {
               <ListItemText primary='Clear'/>
             </ListItemButton>
           </ListItem>
-        
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <BorderColorIcon />
-            <Typography className='ml-8'>Lines</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-              <ListItem key='Line DDA' disablePadding>
-                <ListItemButton onClick={() => setGenerator(new TwoPointGenerator(new DDALineDrawer()))}>
-                  <ListItemIcon>
-                    <AutoGraphIcon/>
-                  </ListItemIcon>
-                  <ListItemText primary='Line DDA'/>
-                </ListItemButton>
-              </ListItem>
-              <ListItem key='Bresenham' disablePadding>
-                <ListItemButton onClick={() => setGenerator(new TwoPointGenerator(new BresenhamLineDrawer()))}>
-                  <ListItemIcon>
-                    <AutoGraphIcon/>
-                  </ListItemIcon>
-                  <ListItemText primary='Bresenham'/>
-                </ListItemButton>
-              </ListItem>
-              <ListItem key='Antialiasing' disablePadding>
-                <ListItemButton onClick={() => setGenerator(new TwoPointGenerator(new AntialiasingLineDrawer()))}>
-                  <ListItemIcon>
-                    <AutoGraphIcon/>
-                  </ListItemIcon>
-                  <ListItemText primary='Antialiasing'/>
-                </ListItemButton>
-              </ListItem>
-          </AccordionDetails>
-        </Accordion>
 
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <BorderColorIcon />
-            <Typography className='ml-8'>Curve</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-              <ListItem key='Ermitov' disablePadding>
-                <ListItemButton onClick={() => setGenerator(new FourPointGenerator(new HermiteDrawer()))}>
-                  <ListItemIcon>
-                    <AutoGraphIcon/>
-                  </ListItemIcon>
-                  <ListItemText primary='Ermitov'/>
-                </ListItemButton>
-              </ListItem>
-              <ListItem key='Bezie' disablePadding>
-                <ListItemButton onClick={() => setGenerator(new FourPointGenerator(new BezieDrawer()))}>
-                  <ListItemIcon>
-                    <AutoGraphIcon/>
-                  </ListItemIcon>
-                  <ListItemText primary='Bezie'/>
-                </ListItemButton>
-              </ListItem>
-              <ListItem key='B-Spline' disablePadding>
-                <ListItemButton onClick={() => setGenerator(new MultiPointGeneratorImpl(new SpliteToFour(new BSplinesDrawer())))}>
-                  <ListItemIcon>
-                    <AutoGraphIcon/>
-                  </ListItemIcon>
-                  <ListItemText primary='B-Spline'/>
-                </ListItemButton>
-              </ListItem>
-          </AccordionDetails>
-        </Accordion>
-
-
-
-        {/* <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <AnimationIcon />
-            <Typography className='ml-8'>Second-order lines</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            {['Circle' ,'Ellipse', 'Parabola', 'Hyperbola'].map((text, index) => (
-              <ListItem
-                key={text}
-                disablePadding
+          <ListItemButton onClick={() => handleCollapseClick("Lines")}>
+            <ListItemIcon>
+              <BorderColorIcon />
+            </ListItemIcon>
+            <ListItemText primary="Lines" />
+              {open === "Lines" ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={open === "Lines" ? true : false} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              
+              <ListItemButton sx={{ pl: 4 }}
+                selected={selectedIndex === 2} 
+                onClick={(event) => {
+                  setGenerator(new TwoPointGenerator(new DDALineDrawer()))
+                  handleListItemClick(event, 2)
+                }}
               >
-                <ListItemButton onClick={() => {
-                  setSelectedButton(text);
-                  remove();
-                  // handleLinesClick(text);
-                  }}
-                  selected={true ? selectedButton === text : false}
-                >
-                  <ListItemIcon>
-                    <PanoramaFishEyeIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </AccordionDetails>
-        </Accordion>  */}
+                <ListItemIcon>
+                  <AutoGraphIcon />
+                </ListItemIcon>
+                <ListItemText primary="Line DDA" />
+              </ListItemButton>
+
+              <ListItemButton sx={{ pl: 4 }} 
+                selected={selectedIndex === 3}
+                onClick={(event) => {
+                  setGenerator(new TwoPointGenerator(new BresenhamLineDrawer()))
+                  handleListItemClick(event, 3)
+                }}
+              >
+                <ListItemIcon>
+                  <AutoGraphIcon />
+                </ListItemIcon>
+                <ListItemText primary="Bresenham" />
+              </ListItemButton>
+              
+              <ListItemButton sx={{ pl: 4 }}
+              selected={selectedIndex === 4} 
+                onClick={(event) => {
+                  setGenerator(new TwoPointGenerator(new AntialiasingLineDrawer()))
+                  handleListItemClick(event, 4)
+                }}
+              >
+                <ListItemIcon>
+                  <AutoGraphIcon />
+                </ListItemIcon>
+                <ListItemText primary="Antialiasing" />
+              </ListItemButton>
+            
+            </List>
+          </Collapse>
+
+          <ListItemButton onClick={() => handleCollapseClick("SecondOrder")}>
+            <ListItemIcon>
+              <BorderColorIcon />
+            </ListItemIcon>
+            <ListItemText primary="Second-order lines" />
+              {open === "SecondOrder" ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={open === "SecondOrder" ? true : false} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              
+              <ListItemButton sx={{ pl: 4 }}
+                selected={selectedIndex === 5} 
+                onClick={(event) => {
+                  setGenerator(new TwoPointGenerator(new CircleDrawer()))
+                  handleListItemClick(event, 5)
+                }}
+              >
+                <ListItemIcon>
+                  <AutoGraphIcon />
+                </ListItemIcon>
+                <ListItemText primary="Circle" />
+              </ListItemButton>
+
+              <ListItemButton sx={{ pl: 4 }} 
+                selected={selectedIndex === 6 }
+                onClick={(event) => {
+                  setGenerator(new TwoPointGenerator(new EllipseDrawer()))
+                  handleListItemClick(event, 6)
+                }}
+              >
+                <ListItemIcon>
+                  <AutoGraphIcon />
+                </ListItemIcon>
+                <ListItemText primary="Ellipse" />
+              </ListItemButton>
+              
+              <ListItemButton sx={{ pl: 4 }}
+                selected={selectedIndex === 7}
+                onClick={(event) => {
+                  setGenerator(new TwoPointGenerator(new ParabolaDrawer()))
+                  handleListItemClick(event, 7)
+                }}
+              >
+                <ListItemIcon>
+                  <AutoGraphIcon />
+                </ListItemIcon>
+                <ListItemText primary="Parabola" />
+              </ListItemButton>
+
+              <ListItemButton sx={{ pl: 4 }} 
+                selected={selectedIndex === 8}
+                onClick={(event) => {
+                  setGenerator(new TwoPointGenerator(new HyperbolaDrawer()))
+                  handleListItemClick(event, 8)
+                }}
+              >
+                <ListItemIcon>
+                  <AutoGraphIcon />
+                </ListItemIcon>
+                <ListItemText primary="Hyperbola" />
+              </ListItemButton>
+            
+            </List>
+          </Collapse>
+
+          <ListItemButton onClick={() => {handleCollapseClick("Curve")}}>
+            <ListItemIcon>
+              <BorderColorIcon />
+            </ListItemIcon>
+            <ListItemText primary="Curve Lines" />
+              {open === "Curve" ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={open === "Curve" ? true : false} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              
+              <ListItemButton sx={{ pl: 4 }}
+                selected={selectedIndex === 9} 
+                onClick={(event) => {
+                  setGenerator(new FourPointGenerator(new HermiteDrawer()))
+                  handleListItemClick(event, 9)
+                }}
+              >
+                <ListItemIcon>
+                  <AutoGraphIcon />
+                </ListItemIcon>
+                <ListItemText primary="Hermite" />
+              </ListItemButton>
+
+              <ListItemButton sx={{ pl: 4 }}
+                selected={selectedIndex === 10} 
+                onClick={(event) => {
+                  setGenerator(new FourPointGenerator(new BezieDrawer()))
+                  handleListItemClick(event, 10)
+                }}
+              >
+                <ListItemIcon>
+                  <AutoGraphIcon />
+                </ListItemIcon>
+                <ListItemText primary="Bezie" />
+              </ListItemButton>
+              
+              <ListItemButton sx={{ pl: 4 }}
+                selected={selectedIndex === 11} 
+                onClick={(event) => {
+                  setGenerator(new MultiPointGeneratorImpl(new SpliteToFour(new BSplinesDrawer())))
+                  handleListItemClick(event, 11)
+                }}
+              >
+                <ListItemIcon>
+                  <AutoGraphIcon />
+                </ListItemIcon>
+                <ListItemText primary="B-Spline" />
+              </ListItemButton>
+            
+            </List>
+          </Collapse>
+    
       </List>
-      <Divider />
              
       {/* <List className='items-center'>
         <Typography>Pixel Size</Typography>
@@ -274,12 +361,12 @@ export default function Home(props: Props) {
 
       const clickListener = (evt: MouseEvent) => {
         const mousePos = getMousePos(canvas, evt)
-        generator.click(context, Math.floor(mousePos.x / context.pixelSize), Math.floor(mousePos.y / context.pixelSize))
+        generator?.click(context, Math.floor(mousePos.x / context.pixelSize), Math.floor(mousePos.y / context.pixelSize))
       }
 
       const moveListener = (evt: MouseEvent) => {
         const mousePos = getMousePos(canvas, evt)
-        generator.move(context, Math.floor(mousePos.x / context.pixelSize), Math.floor(mousePos.y / context.pixelSize))
+        generator?.move(context, Math.floor(mousePos.x / context.pixelSize), Math.floor(mousePos.y / context.pixelSize))
       }
 
       canvas.addEventListener('click', clickListener);
@@ -287,12 +374,12 @@ export default function Home(props: Props) {
 
       canvas.addEventListener('mousedown', (evt) => {
         const mousePos = getMousePos(canvas, evt)
-        generator.press(context, Math.floor(mousePos.x / context.pixelSize), Math.floor(mousePos.y / context.pixelSize))  
+        generator?.press(context, Math.floor(mousePos.x / context.pixelSize), Math.floor(mousePos.y / context.pixelSize))  
       });
 
       canvas.addEventListener('mouseup', (evt) => {
         const mousePos = getMousePos(canvas, evt)
-        generator.release(context, Math.floor(mousePos.x / context.pixelSize), Math.floor(mousePos.y / context.pixelSize))  
+        generator?.release(context, Math.floor(mousePos.x / context.pixelSize), Math.floor(mousePos.y / context.pixelSize))  
       });
       
       document.addEventListener('keydown', (event) => {
@@ -306,12 +393,12 @@ export default function Home(props: Props) {
             context.repaint()
           break;
           case 'KeyE': 
-            generator.end(context)
+            generator!.end(context)
           break;
         }
       });
     }
-  })
+  }, [])
 
   return (
     <Box sx={{ display: 'flex' }}>

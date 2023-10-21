@@ -3,6 +3,7 @@ import { range } from "../../../utils/range";
 import PixelDrawer from "../PixelDrawer";
 import TwoPointDrawer from "../TwoPointDrawer";
 
+
 export default class BresenhamLineDrawer extends TwoPointDrawer {
     draw(ctx: PixelDrawer, point1: Point, point2: Point): void {
         const x1 = point1.x;

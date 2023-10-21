@@ -4,12 +4,14 @@ import Point from "@/app/objects/Point";
 import PixelDrawer from "../PixelDrawer";
 import { rangeStep } from "../../../utils/range";
 
+
 const MATRIX = matrix([
     [2.0, -2.0, 1.0, 1.0],
     [-3.0, 3.0, -2.0, -1.0],
     [0.0, 0.0, 1.0, 0.0],
     [1.0, 0.0, 0.0, 0.0],
 ]);
+
 
 export default class HermiteDrawer extends FourPointDrawer {
 

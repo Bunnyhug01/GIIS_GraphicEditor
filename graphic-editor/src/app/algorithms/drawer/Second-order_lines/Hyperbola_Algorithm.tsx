@@ -54,6 +54,7 @@ export default function drawHyperbola(ctx: CanvasRenderingContext2D, center: num
     return coordinates;
 }
 
+
 function pixel4 (ctx: CanvasRenderingContext2D, x:number, y:number, _x:number, _y:number, pixelSize:number = 1, a:number, b:number): number[][] {
     const coordinates:number[][] = [];
     
