@@ -9,7 +9,7 @@ class JSGeneratorContext extends GeneratorContext {
 
     objects: DrawObject[] = []
     debug: boolean = false
-    pixelSize: number = 20
+    pixelSize: number = 10
 
     constructor() {
       super()

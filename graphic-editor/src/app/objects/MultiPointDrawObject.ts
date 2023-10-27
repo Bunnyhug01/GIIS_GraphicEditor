@@ -19,7 +19,7 @@ export default class MultiPointDrawObject extends DrawObject {
     }
 
     getPoints(): Point[] {
-        return points
+        return this.points
     }
 
 }

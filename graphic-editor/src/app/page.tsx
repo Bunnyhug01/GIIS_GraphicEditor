@@ -29,6 +29,8 @@ import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
+import DrawIcon from '@mui/icons-material/Draw';
+import GestureIcon from '@mui/icons-material/Gesture';
 
 import { Collapse, Slider } from '@mui/material';
 
@@ -198,7 +200,7 @@ export default function Home(props: Props) {
 
           <ListItemButton onClick={() => handleCollapseClick("SecondOrder")}>
             <ListItemIcon>
-              <BorderColorIcon />
+              <AnimationIcon />
             </ListItemIcon>
             <ListItemText primary="Second-order lines" />
               {open === "SecondOrder" ? <ExpandLess /> : <ExpandMore />}
@@ -214,7 +216,7 @@ export default function Home(props: Props) {
                 }}
               >
                 <ListItemIcon>
-                  <AutoGraphIcon />
+                  <PanoramaFishEyeIcon />
                 </ListItemIcon>
                 <ListItemText primary="Circle" />
               </ListItemButton>
@@ -263,7 +265,7 @@ export default function Home(props: Props) {
 
           <ListItemButton onClick={() => {handleCollapseClick("Curve")}}>
             <ListItemIcon>
-              <BorderColorIcon />
+              <DrawIcon />
             </ListItemIcon>
             <ListItemText primary="Curve Lines" />
               {open === "Curve" ? <ExpandLess /> : <ExpandMore />}
@@ -279,7 +281,7 @@ export default function Home(props: Props) {
                 }}
               >
                 <ListItemIcon>
-                  <AutoGraphIcon />
+                  <GestureIcon />
                 </ListItemIcon>
                 <ListItemText primary="Hermite" />
               </ListItemButton>
@@ -292,7 +294,7 @@ export default function Home(props: Props) {
                 }}
               >
                 <ListItemIcon>
-                  <AutoGraphIcon />
+                  <GestureIcon />
                 </ListItemIcon>
                 <ListItemText primary="Bezie" />
               </ListItemButton>
@@ -305,7 +307,7 @@ export default function Home(props: Props) {
                 }}
               >
                 <ListItemIcon>
-                  <AutoGraphIcon />
+                  <GestureIcon />
                 </ListItemIcon>
                 <ListItemText primary="B-Spline" />
               </ListItemButton>
