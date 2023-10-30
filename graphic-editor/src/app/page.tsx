@@ -10,14 +10,11 @@ import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 
 import IconButton from '@mui/material/IconButton';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import DeleteIcon from '@mui/icons-material/Delete';
-import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import Grid4x4 from '@mui/icons-material/Grid4x4';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AnimationIcon from '@mui/icons-material/Animation';
 import PanToolIcon from '@mui/icons-material/PanTool';
 
@@ -31,8 +28,11 @@ import Typography from '@mui/material/Typography';
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
 import DrawIcon from '@mui/icons-material/Draw';
 import GestureIcon from '@mui/icons-material/Gesture';
+import ViewInArIcon from '@mui/icons-material/ViewInAr';
+import ThreeDRotationIcon from '@mui/icons-material/ThreeDRotation';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
-import { Collapse, Slider } from '@mui/material';
+import { Button, Collapse, styled } from '@mui/material';
 
 import TwoPointGenerator from './generator/TwoPointGenerator';
 import DDALineDrawer from './algorithms/drawer/lines/DDALineDrawer';
@@ -47,11 +47,12 @@ import AntialiasingLineDrawer from './algorithms/drawer/lines/AntialiasingLineDr
 import SpliteToFour from './algorithms/drawer/curve _lines/SpliteToFour';
 import BSplinesDrawer from './algorithms/drawer/curve _lines/BSplinesDrawer';
 import MultiPointGeneratorImpl from './generator/MultiPointGeneratorImpl';
-import { ExpandLess, ExpandMore, StarBorder } from '@mui/icons-material';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import CircleDrawer from './algorithms/drawer/Second-order_lines/CircleDrawer';
 import EllipseDrawer from './algorithms/drawer/Second-order_lines/EllipseDrawer';
 import ParabolaDrawer from './algorithms/drawer/Second-order_lines/ParabolaDrawer';
 import HyperbolaDrawer from './algorithms/drawer/Second-order_lines/HyperbolaDrawer';
+import ThreeDObject from './algorithms/3D/ThreeDObject';
 
 const drawerWidth = 240;
 
@@ -69,6 +70,19 @@ let generator: ObjectGenerator;
 function setGenerator(g: ObjectGenerator) {
   generator = g
 }
+
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 
 
 export default function Home(props: Props) {
@@ -102,12 +116,29 @@ export default function Home(props: Props) {
     setSelectedIndex(index);
   };
 
+  const [threeDRegime, setThreeDRegime] = useState<boolean | null>(false);
+
+  const handleThreeDRegimeClick = () => {
+    setThreeDRegime(!threeDRegime);
+  };
+
+  
+  const [file, setFile] = useState<File>()
+
+  function handleFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
+    const { files } = event.target;
+    const selectedFiles = files as FileList;
+    
+    setFile(selectedFiles?.[0]);
+  }
+
+
   const drawer = (
     <div>
       <Toolbar />
       <Divider />
       <List>
-        <ListItem key='Debug' disablePadding>
+          <ListItem key='Debug' disablePadding>
             <ListItemButton 
               selected={selectedIndex === 0}
               onClick={(event) => {
@@ -314,6 +345,47 @@ export default function Home(props: Props) {
             
             </List>
           </Collapse>
+          
+          <ListItemButton onClick={() => {handleCollapseClick("3D")}}>
+            <ListItemIcon>
+              <ThreeDRotationIcon/>
+            </ListItemIcon>
+            <ListItemText primary="3D" />
+              {open === "3D" ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={open === "3D" ? true : false} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              
+              <ListItem key='Draw 3D' disablePadding>
+                <ListItemButton 
+                  selected={threeDRegime === true}
+                  onClick={() => {
+                    if (threeDRegime === true) {
+                      closeThreeDRegime()
+                    } else {
+                      ThreeDObject(file)
+                    }
+                    handleThreeDRegimeClick()
+                    }}>
+                  <ListItemIcon>
+                    <ViewInArIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary='Draw 3D'/>
+                </ListItemButton>
+              </ListItem>
+
+              <ListItem component="label" key='Upload obj' disablePadding>
+                <ListItemButton>
+                  <ListItemIcon>
+                    <CloudUploadIcon />
+                  </ListItemIcon>
+                  <ListItemText primary='Upload Object'/>
+                  <VisuallyHiddenInput type="file" accept='.obj' onChange={handleFileUpload} />
+                </ListItemButton>
+              </ListItem>
+            
+            </List>
+          </Collapse>
     
       </List>
              
@@ -353,6 +425,12 @@ export default function Home(props: Props) {
   function handleSlider(value: number | number[]) {
     const size = Array.isArray(value) ? value[0] : value;
     context.setPixelSize(size);
+  }
+  
+  function closeThreeDRegime() {
+    const canvasThreeD = document.getElementById("3Dcanvas")
+    console.log(canvasThreeD)
+    canvasThreeD?.remove()
   }
 
   useEffect(() => {
@@ -395,7 +473,7 @@ export default function Home(props: Props) {
             context.repaint()
           break;
           case 'KeyE': 
-            generator!.end(context)
+            generator?.end(context)
           break;
         }
       });
@@ -463,7 +541,7 @@ export default function Home(props: Props) {
         sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
         <Toolbar />
-        <div className="relative">
+        <div id='canvases' className="relative">
           <canvas id="canvas" width="1200" height="720" 
             className='absolute left-0 top-0 z-40 border'>
           </canvas>
