@@ -10,6 +10,7 @@ import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 
 import IconButton from '@mui/material/IconButton';
+
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -17,6 +18,14 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Grid4x4 from '@mui/icons-material/Grid4x4';
 import AnimationIcon from '@mui/icons-material/Animation';
 import PanToolIcon from '@mui/icons-material/PanTool';
+import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
+import DrawIcon from '@mui/icons-material/Draw';
+import GestureIcon from '@mui/icons-material/Gesture';
+import ViewInArIcon from '@mui/icons-material/ViewInAr';
+import ThreeDRotationIcon from '@mui/icons-material/ThreeDRotation';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import PanoramaVerticalIcon from '@mui/icons-material/PanoramaVertical';
+import PanoramaWideAngleIcon from '@mui/icons-material/PanoramaWideAngle';
 
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -25,14 +34,8 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
-import DrawIcon from '@mui/icons-material/Draw';
-import GestureIcon from '@mui/icons-material/Gesture';
-import ViewInArIcon from '@mui/icons-material/ViewInAr';
-import ThreeDRotationIcon from '@mui/icons-material/ThreeDRotation';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
-import { Button, Collapse, styled } from '@mui/material';
+import { Collapse, styled } from '@mui/material';
 
 import TwoPointGenerator from './generator/TwoPointGenerator';
 import DDALineDrawer from './algorithms/drawer/lines/DDALineDrawer';
@@ -53,6 +56,10 @@ import EllipseDrawer from './algorithms/drawer/Second-order_lines/EllipseDrawer'
 import ParabolaDrawer from './algorithms/drawer/Second-order_lines/ParabolaDrawer';
 import HyperbolaDrawer from './algorithms/drawer/Second-order_lines/HyperbolaDrawer';
 import ThreeDObject from './algorithms/3D/ThreeDObject';
+import PolygonGenerator from './generator/PolygonGenerator';
+import GrahamMinimalConvexHullSolver from './objects/solver/GrahamMinimalConvexHullSolver';
+import JarvisMinimalConvexHullSolver from './objects/solver/JarvisMinimalConvexHullSolver';
+
 
 const drawerWidth = 240;
 
@@ -386,6 +393,51 @@ export default function Home(props: Props) {
             
             </List>
           </Collapse>
+
+          <ListItemButton onClick={() => {handleCollapseClick("MCH")}}>
+            <ListItemIcon>
+              <PanoramaVerticalIcon/>
+            </ListItemIcon>
+            <ListItemText primary="MCH" />
+              {open === "MCH" ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={open === "MCH" ? true : false} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              
+              <ListItem key='Graham Polygon' disablePadding>
+                <ListItemButton 
+                  selected={selectedIndex === 13} 
+                  onClick={(event) => {
+                    setGenerator(new PolygonGenerator(new GrahamMinimalConvexHullSolver()))
+                    handleListItemClick(event, 13)
+                  }}
+                >
+                  <ListItemIcon>
+                    <PanoramaWideAngleIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary='Graham Polygon'/>
+                </ListItemButton>
+              </ListItem>
+
+              <ListItem key='Jarvis Polygon' disablePadding>
+                <ListItemButton 
+                  selected={selectedIndex === 14} 
+                  onClick={(event) => {
+                    setGenerator(new PolygonGenerator(new JarvisMinimalConvexHullSolver()))
+                    handleListItemClick(event, 14)
+                  }}
+                >
+                  <ListItemIcon>
+                    <PanoramaWideAngleIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary='Jarvis Polygon'/>
+                </ListItemButton>
+              </ListItem>
+            
+            </List>
+          </Collapse>
+
+          
     
       </List>
              
@@ -541,14 +593,14 @@ export default function Home(props: Props) {
         sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
         <Toolbar />
-        <div id='canvases' className="relative">
+        <Box id='canvases' className="relative">
           <canvas id="canvas" width="1200" height="720" 
             className='absolute left-0 top-0 z-40 border'>
           </canvas>
           <canvas id="canvas2" width="1200" height="720" 
             className='absolute left-0 top-0 z-0 border'>
           </canvas>
-        </div>
+        </Box>
       </Box>
     </Box>
   );

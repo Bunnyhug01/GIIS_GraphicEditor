@@ -1,5 +1,6 @@
 import BasePixelDrawer from "../algorithms/drawer/BasePixelDrawer"
 import PixelDrawer from "../algorithms/drawer/PixelDrawer"
+import { Line } from "./Line"
 import Point from "./Point"
 
 export default class DrawObject {
@@ -7,6 +8,10 @@ export default class DrawObject {
     getPoints(): Point[] {
 		throw new Error("Method not implemented.")
 	}
+
+    getLines(): Line[] {
+        return []
+    }
 
     draw(drawer:PixelDrawer) {}
 

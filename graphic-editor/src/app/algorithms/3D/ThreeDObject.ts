@@ -45,7 +45,7 @@ export default async function ThreeDObject(obj?: File) {
 
    const fragCode = 'precision mediump float;'+
       'void main(void) {'+
-         'gl_FragColor = vec4(144, 0, 255, 1.);'+
+         'gl_FragColor = vec4(0, 0.62, 0.067, 1.);'+
       '}';
 
    const vertShader = gl.createShader(gl.VERTEX_SHADER)!;
@@ -85,9 +85,9 @@ export default async function ThreeDObject(obj?: File) {
          0, 0, -(zMax+zMin)/(zMax-zMin), -1,
          0, 0, (-2*zMax*zMin)/(zMax-zMin), 0 
       ];
-    }
+   }
 
-   const proj_matrix = get_projection(40, canvas.width/canvas.height, 1, 100);
+   const proj_matrix = get_projection(40, canvas.width/canvas.height, 0.1, 1000000);
    let mo_matrix = [ 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 ];
    const view_matrix = [ 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 ];
 

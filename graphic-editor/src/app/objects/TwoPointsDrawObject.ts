@@ -4,8 +4,8 @@ import DrawObject from "./DrawObject";
 import Point from "./Point";
 
 export default class TwoPointsDrawObject extends DrawObject {
-    point1:Point;
-    point2:Point;
+    public point1:Point;
+    public point2:Point;
 
     drawer:TwoPointDrawer;
 
