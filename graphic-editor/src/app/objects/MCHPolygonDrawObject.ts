@@ -1,22 +1,25 @@
 import DrawObject from "@/app/objects/DrawObject";
 import Point from "@/app/objects/Point";
-import TwoPointDrawer from "./TwoPointDrawer";
-import BresenhamLineDrawer from "./lines/BresenhamLineDrawer";
+import TwoPointDrawer from "../algorithms/drawer/TwoPointDrawer";
+import BresenhamLineDrawer from "../algorithms/drawer/lines/BresenhamLineDrawer";
 import { Line, toLines } from "@/app/objects/Line";
-import PixelDrawer from "./PixelDrawer";
+import PixelDrawer from "../algorithms/drawer/PixelDrawer";
 import { MinimalConvexHullSolver } from "@/app/objects/solver/MinimalConvexHullSolver";
+import PolygonDrawObject from "./PolygonDrawObject";
 
-export default class PolygonDrawObject extends DrawObject {
+export default class MCHPolygonDrawObject extends PolygonDrawObject {
 
     points: Point[]
     solver: MinimalConvexHullSolver
-    drawer: TwoPointDrawer
 
     constructor(points: Point[], solver: MinimalConvexHullSolver, drawer: TwoPointDrawer) {
-        super()
+        super(drawer)
         this.points = points
         this.solver = solver
-        this.drawer = drawer
+    }
+
+    isHull(): Boolean {
+        return true
     }
 
     getLines(): Line[] {
@@ -25,11 +28,5 @@ export default class PolygonDrawObject extends DrawObject {
 
     getPoints(): Point[] {
         return this.points
-    }
-
-    draw(drawer: PixelDrawer): void {
-        for (const line of this.getLines()) {
-            this.drawer.draw(drawer, line.point1, line.point2)
-        }
     }
 }

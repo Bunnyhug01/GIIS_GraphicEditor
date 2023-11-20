@@ -59,6 +59,7 @@ import ThreeDObject from './algorithms/3D/ThreeDObject';
 import PolygonGenerator from './generator/PolygonGenerator';
 import GrahamMinimalConvexHullSolver from './objects/solver/GrahamMinimalConvexHullSolver';
 import JarvisMinimalConvexHullSolver from './objects/solver/JarvisMinimalConvexHullSolver';
+import BasePolygonGenerator from './generator/BasePolygonGenerator';
 
 
 const drawerWidth = 240;
@@ -394,15 +395,30 @@ export default function Home(props: Props) {
             </List>
           </Collapse>
 
-          <ListItemButton onClick={() => {handleCollapseClick("MCH")}}>
+          <ListItemButton onClick={() => {handleCollapseClick("Polygon")}}>
             <ListItemIcon>
               <PanoramaVerticalIcon/>
             </ListItemIcon>
-            <ListItemText primary="MCH" />
+            <ListItemText primary="Polygon" />
               {open === "MCH" ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
-          <Collapse in={open === "MCH" ? true : false} timeout="auto" unmountOnExit>
+          <Collapse in={open === "Polygon" ? true : false} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
+              
+              <ListItem key='Polygon' disablePadding>
+                <ListItemButton 
+                  selected={selectedIndex === 13} 
+                  onClick={(event) => {
+                    setGenerator(new BasePolygonGenerator())
+                    handleListItemClick(event, 13)
+                  }}
+                >
+                  <ListItemIcon>
+                    <PanoramaWideAngleIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary='Polygon'/>
+                </ListItemButton>
+              </ListItem>
               
               <ListItem key='Graham Polygon' disablePadding>
                 <ListItemButton 

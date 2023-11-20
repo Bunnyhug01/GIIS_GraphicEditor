@@ -14,9 +14,17 @@ Array.prototype.extremumBy = function(pluck, extremum) {
 	
 export function minBy(array, fn) { 
 	return array.extremumBy(fn, Math.min); 
-  };
+};
 
 
 export function maxBy(array, fn) { 
 	return array.extremumBy(fn, Math.max); 
+};
+
+export function count(array, fn) {
+	var count = 0
+	for(e of array)
+		if(fn(e))
+			count += 1
+	return count
 };

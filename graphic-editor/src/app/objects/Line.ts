@@ -1,3 +1,4 @@
+import { sqrt } from "mathjs"
 import { maxBy, minBy } from "../utils/arrays"
 import Point from "./Point"
 
@@ -17,17 +18,49 @@ export class Line {
     }
 
     public get b() : number {
-        return this.point2.x - this.point1.x
+        return this.point1.x - this.point2.x
     }
 
     public get c() : number {
         return -this.point1.x * this.a - this.point1.y * this.b
     }
 
+    public get normal() : vec2 {
+        return normalize(vec2(this.a, this.b))
+    }
+
+    public get center(): Point {
+        return new Point((this.point2.x + this.point1.x) / 2, (this.point2.y + this.point1.y) / 2)
+    }
+
     public get points() : Point[] {
         return [this.point1, this.point2]
     }
     
+}
+
+export interface vec2 {
+    x: number
+    y: number
+}
+
+function vec2(x: number, y: number): vec2 {
+    return { x: x, y: y }
+} 
+
+function normalize(v: vec2): vec2 {
+    const length = sqrt(v.x * v.x + v.y * v.y) as number
+    if(length < 0.01)
+        return v
+    return { x: v.x / length, y: v.y / length}
+}
+
+export function crossProduction(a: Line, b: Line) {
+    const ax = a.point2.x - a.point1.x
+    const ay = a.point2.y - a.point1.y
+    const bx = b.point2.x - b.point1.x
+    const by = b.point2.y - b.point1.y
+    return ax * by - ay * bx
 }
 
 export function cross(line1: Line, line2: Line): Point | null {

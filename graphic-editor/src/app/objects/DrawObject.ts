@@ -18,6 +18,9 @@ export default class DrawObject {
     countPixel(): number {
         let count = 0
         let counter: PixelDrawer =  {
+            drawColorPixel(x, y, color) {
+                count++
+            },
             drawPixel(x: number, y: number, a:number = 1) {
                 count++
             }
