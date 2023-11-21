@@ -26,4 +26,18 @@ export default class DebugPixelDrawer extends PixelDrawer {
             this.originPixelDrawer.drawPixel(x, y, a);
         }
     }
+
+    drawColorPixel(x: number, y: number, color: string): void {
+        if(this._lastX === x && this._lastY === y)
+            return;
+
+        if(this.count > 0) {
+            this.count--;
+
+            this._lastX = x;
+            this._lastY = y;
+
+            this.originPixelDrawer.drawColorPixel(x, y, color);
+        }
+    }
 }

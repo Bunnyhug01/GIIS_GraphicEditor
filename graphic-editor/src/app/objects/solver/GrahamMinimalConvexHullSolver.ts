@@ -4,7 +4,9 @@ import { MinimalConvexHullSolver, rotate } from "./MinimalConvexHullSolver";
 
 export default class GrahamMinimalConvexHullSolver extends MinimalConvexHullSolver {
 
-    solve(a: Point[]): Point[] {
+    solve(_a: Point[]): Point[] {
+        const a = _a.filter((value, index) => _a.indexOf(value) === index)
+
         const n = a.length
         if (n < 3) return []
 

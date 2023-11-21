@@ -28,3 +28,19 @@ export function count(array, fn) {
 			count += 1
 	return count
 };
+
+export function all(array, fn) {
+	for (const e of array) {
+		if (!fn(e)) return false
+	}
+
+	return true
+}
+
+export function any(array, fn) {
+	for (const e of array) {
+		if (fn(e)) return true
+	}
+
+	return false
+}

@@ -3,6 +3,8 @@ import BasePixelDrawer from "./algorithms/drawer/BasePixelDrawer"
 import { GeneratorContext } from "./generator/ObjectGenerator"
 import DebugDrawObject from "./objects/DebugDrawObject"
 import DrawObject from "./objects/DrawObject"
+import { cross } from "./objects/Line"
+import { range } from "./utils/range"
 
 
 class JSGeneratorContext extends GeneratorContext {
@@ -73,6 +75,7 @@ class JSGeneratorContext extends GeneratorContext {
       const canvas = document.getElementById('canvas') as HTMLCanvasElement;
       const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
+      ctx.fillStyle = 'black'
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const pixelDrawer = new BasePixelDrawer(ctx, this.pixelSize)
 
@@ -81,6 +84,20 @@ class JSGeneratorContext extends GeneratorContext {
 
       for (const e of this.objects) {
         e.draw(pixelDrawer)
+      }
+
+      ctx.fillStyle = 'green'
+      for (const a of this.objects) {
+        for (const b of this.objects) {
+          for (const lineA of a.getLines()) {
+            for (const lineB of b.getLines()) {
+              const point = cross(lineA , lineB)
+
+              if (point === null) continue
+              pixelDrawer.drawPixel(point.x, point.y)
+            }
+          }
+        }
       }
     }
 

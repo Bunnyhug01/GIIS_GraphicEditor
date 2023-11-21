@@ -67,14 +67,14 @@ export function cross(line1: Line, line2: Line): Point | null {
 	const det = line1.a * line2.b - line2.a * line1.b
 	if(det == 0) return null
 
-	const x = -(line2.b * line1.c - line1.b * line2.c) / det
-	const y = (line2.a * line1.c - line1.a * line2.c) / det
+	const x = Math.floor(-(line2.b * line1.c - line1.b * line2.c) / det)
+	const y = Math.floor((line2.a * line1.c - line1.a * line2.c) / det)
 
 	for(const line of [line1, line2]) {
-		const maxX = maxBy(line.points, (it:Point) => it.x)
-		const maxY = maxBy(line.points, (it:Point) => it.y)
-		const minX = minBy(line.points, (it:Point) => it.x)
-		const minY = maxBy(line.points, (it:Point) => it.y)
+		const maxX = maxBy(line.points, (it:Point) => it.x).x
+		const maxY = maxBy(line.points, (it:Point) => it.y).y
+		const minX = minBy(line.points, (it:Point) => it.x).x
+		const minY = minBy(line.points, (it:Point) => it.y).y
 
 		if(x > maxX)
 			return null
