@@ -4,7 +4,7 @@ import PolygonDrawObject from "./PolygonDrawObject";
 import TwoPointDrawer from "../algorithms/drawer/TwoPointDrawer";
 import { Line, toLines } from "./Line";
 import { MinimalConvexHullSolver, rotate } from "./solver/MinimalConvexHullSolver";
-import { all } from "mathjs";
+import { all } from "../utils/arrays";
 
 export default class MCHPolygonDrawObject extends PolygonDrawObject {
 

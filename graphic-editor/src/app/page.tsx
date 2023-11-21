@@ -75,10 +75,10 @@ interface Props {
   window?: () => Window;
 }
 
-let generator: ObjectGenerator;
-
+let generator: ObjectGenerator = new MouseMove();
 
 function setGenerator(g: ObjectGenerator) {
+  generator.end(context)
   generator = g
 }
 

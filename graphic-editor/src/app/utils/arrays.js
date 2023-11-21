@@ -23,7 +23,7 @@ export function maxBy(array, fn) {
 
 export function count(array, fn) {
 	var count = 0
-	for(e of array)
+	for(const e of array)
 		if(fn(e))
 			count += 1
 	return count
