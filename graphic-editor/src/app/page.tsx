@@ -26,6 +26,7 @@ import ThreeDRotationIcon from '@mui/icons-material/ThreeDRotation';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import PanoramaVerticalIcon from '@mui/icons-material/PanoramaVertical';
 import PanoramaWideAngleIcon from '@mui/icons-material/PanoramaWideAngle';
+import HighlightAltIcon from '@mui/icons-material/HighlightAlt';
 
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -59,6 +60,8 @@ import ThreeDObject from './algorithms/3D/ThreeDObject';
 import PolygonGenerator from './generator/PolygonGenerator';
 import GrahamMinimalConvexHullSolver from './objects/solver/GrahamMinimalConvexHullSolver';
 import JarvisMinimalConvexHullSolver from './objects/solver/JarvisMinimalConvexHullSolver';
+import LineGenerator from './generator/LineGenerator';
+import PointInsidePolygon from './generator/PointInsidePolygon';
 
 
 const drawerWidth = 240;
@@ -175,6 +178,21 @@ export default function Home(props: Props) {
             </ListItemButton>
           </ListItem>
 
+          <ListItem key='Check if polygon have point' disablePadding>
+            <ListItemButton
+              selected={selectedIndex === 15}
+              onClick={(event) => {
+                setGenerator(new PointInsidePolygon())
+                handleListItemClick(event, 15)
+              }}
+            >
+              <ListItemIcon>
+                <HighlightAltIcon/>
+              </ListItemIcon>
+              <ListItemText primary='Check if polygon have point'/>
+            </ListItemButton>
+          </ListItem>
+
           <ListItem key='Clear' disablePadding>
             <ListItemButton onClick={() => context.clear()}>
               <ListItemIcon>
@@ -197,7 +215,7 @@ export default function Home(props: Props) {
               <ListItemButton sx={{ pl: 4 }}
                 selected={selectedIndex === 2} 
                 onClick={(event) => {
-                  setGenerator(new TwoPointGenerator(new DDALineDrawer()))
+                  setGenerator(new LineGenerator(new DDALineDrawer()))
                   handleListItemClick(event, 2)
                 }}
               >
@@ -210,7 +228,7 @@ export default function Home(props: Props) {
               <ListItemButton sx={{ pl: 4 }} 
                 selected={selectedIndex === 3}
                 onClick={(event) => {
-                  setGenerator(new TwoPointGenerator(new BresenhamLineDrawer()))
+                  setGenerator(new LineGenerator(new BresenhamLineDrawer()))
                   handleListItemClick(event, 3)
                 }}
               >
@@ -223,7 +241,7 @@ export default function Home(props: Props) {
               <ListItemButton sx={{ pl: 4 }}
               selected={selectedIndex === 4} 
                 onClick={(event) => {
-                  setGenerator(new TwoPointGenerator(new AntialiasingLineDrawer()))
+                  setGenerator(new LineGenerator(new AntialiasingLineDrawer()))
                   handleListItemClick(event, 4)
                 }}
               >

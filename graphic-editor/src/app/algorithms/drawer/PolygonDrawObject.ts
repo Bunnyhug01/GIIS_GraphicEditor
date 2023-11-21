@@ -1,10 +1,10 @@
 import DrawObject from "@/app/objects/DrawObject";
 import Point from "@/app/objects/Point";
 import TwoPointDrawer from "./TwoPointDrawer";
-import BresenhamLineDrawer from "./lines/BresenhamLineDrawer";
 import { Line, toLines } from "@/app/objects/Line";
 import PixelDrawer from "./PixelDrawer";
-import { MinimalConvexHullSolver } from "@/app/objects/solver/MinimalConvexHullSolver";
+import { MinimalConvexHullSolver, rotate } from "@/app/objects/solver/MinimalConvexHullSolver";
+import { all } from "@/app/utils/arrays";
 
 export default class PolygonDrawObject extends DrawObject {
 
@@ -31,5 +31,9 @@ export default class PolygonDrawObject extends DrawObject {
         for (const line of this.getLines()) {
             this.drawer.draw(drawer, line.point1, line.point2)
         }
+    }
+
+    inside(point: Point) {
+        return all(this.getLines(), (line: Line) => { return (rotate(line.point1, line.point2, point) > 0) })
     }
 }

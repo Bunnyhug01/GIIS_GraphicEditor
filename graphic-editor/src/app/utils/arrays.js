@@ -20,3 +20,19 @@ export function minBy(array, fn) {
 export function maxBy(array, fn) { 
 	return array.extremumBy(fn, Math.max); 
 };
+
+export function all(array, fn) {
+	for (const e of array) {
+		if (!fn(e)) return false
+	}
+
+	return true
+}
+
+export function any(array, fn) {
+	for (const e of array) {
+		if (fn(e)) return true
+	}
+
+	return false
+}
