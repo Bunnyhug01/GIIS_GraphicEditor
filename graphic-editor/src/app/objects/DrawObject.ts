@@ -24,9 +24,6 @@ export default class DrawObject {
             drawPixel(x: number, y: number, a:number = 1) {
                 count++
             },
-            drawColorPixel(x, y, color) {
-                count++
-            },
         }
         this.draw(counter)
         return count

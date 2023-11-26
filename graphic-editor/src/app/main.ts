@@ -86,15 +86,15 @@ class JSGeneratorContext extends GeneratorContext {
         e.draw(pixelDrawer)
       }
 
-      ctx.fillStyle = 'green'
+
       for (const a of this.objects) {
         for (const b of this.objects) {
           for (const lineA of a.getLines()) {
             for (const lineB of b.getLines()) {
               const point = cross(lineA , lineB)
-
+              
               if (point === null) continue
-              pixelDrawer.drawPixel(point.x, point.y)
+              pixelDrawer.drawColorPixel(point.x, point.y, 'green')
             }
           }
         }

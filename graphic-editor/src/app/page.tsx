@@ -75,7 +75,7 @@ interface Props {
   window?: () => Window;
 }
 
-let generator: ObjectGenerator = new MouseMove();
+let generator: ObjectGenerator = new LineGenerator(new BresenhamLineDrawer());
 
 function setGenerator(g: ObjectGenerator) {
   generator.end(context)
@@ -440,10 +440,10 @@ export default function Home(props: Props) {
               
               <ListItem key='Graham Polygon' disablePadding>
                 <ListItemButton 
-                  selected={selectedIndex === 13} 
+                  selected={selectedIndex === 14} 
                   onClick={(event) => {
                     setGenerator(new PolygonGenerator(new GrahamMinimalConvexHullSolver()))
-                    handleListItemClick(event, 13)
+                    handleListItemClick(event, 14)
                   }}
                 >
                   <ListItemIcon>
@@ -455,10 +455,10 @@ export default function Home(props: Props) {
 
               <ListItem key='Jarvis Polygon' disablePadding>
                 <ListItemButton 
-                  selected={selectedIndex === 14} 
+                  selected={selectedIndex === 15} 
                   onClick={(event) => {
                     setGenerator(new PolygonGenerator(new JarvisMinimalConvexHullSolver()))
-                    handleListItemClick(event, 14)
+                    handleListItemClick(event, 15)
                   }}
                 >
                   <ListItemIcon>
