@@ -27,7 +27,9 @@ class JSGeneratorContext extends GeneratorContext {
 
     remove(obj: DrawObject): void {
       const index = this.objects.indexOf(obj)
-      this.objects.splice(index, 1)
+
+      if (index !== -1)
+        this.objects.splice(index, 1)
     }
 
     clear(): void {

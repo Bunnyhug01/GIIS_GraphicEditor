@@ -21,9 +21,19 @@ export default class BasePolygonDrawObject extends PolygonDrawObject {
         const points = this.getPoints()
 		if(points.length < 3)
 			return false
+
         const line = new Line(new Point(point.x, point.y), new Point(1000, point.y))
-        const c = count(this.getLines(), (it: Line) => cross(it, line) != null)
-		return c % 2 == 1
+
+        const pointsCount = this.getLines().map((it) => cross(it, line)).filter((it) => it !== null) 
+        
+        for (const p of points) {
+            const index = pointsCount.indexOf(p)
+
+            if (index !== -1)
+                pointsCount.splice(index, 1)
+        }
+
+		return pointsCount.length % 2 == 1
 	}
 
     getLines(): Line[] {

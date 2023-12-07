@@ -27,6 +27,8 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import PanoramaVerticalIcon from '@mui/icons-material/PanoramaVertical';
 import PanoramaWideAngleIcon from '@mui/icons-material/PanoramaWideAngle';
 import HighlightAltIcon from '@mui/icons-material/HighlightAlt';
+import FormatColorFillIcon from '@mui/icons-material/FormatColorFill';
+import FormatPaintIcon from '@mui/icons-material/FormatPaint';
 
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -63,6 +65,11 @@ import JarvisMinimalConvexHullSolver from './objects/solver/JarvisMinimalConvexH
 import PointInsidePolygon from './generator/PointInsidePolygon';
 import BasePolygonGenerator from './generator/BasePolygonGenerator';
 import LineGenerator from './generator/LineGenerator';
+import FillPolygonGenerator from './generator/FillPolygonGenerator';
+import RasterReamerFiller from './algorithms/drawer/fillers/RasterReamerFiller';
+import SimpleInoculumFiller from './algorithms/drawer/fillers/SimpleInoculumFiller';
+import RasterReamerActiveEdgeFiller from './algorithms/drawer/fillers/RasterReamerActiveEdgeFiller';
+import LineInoculumFiller from './algorithms/drawer/fillers/LineInoculumFiller';
 
 
 const drawerWidth = 240;
@@ -124,7 +131,11 @@ export default function Home(props: Props) {
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
     index: number,
   ) => {
-    setSelectedIndex(index);
+    if (selectedIndex === index) {
+      setSelectedIndex(null)
+    } else {
+      setSelectedIndex(index);
+    }
   };
 
   const [threeDRegime, setThreeDRegime] = useState<boolean | null>(false);
@@ -145,7 +156,7 @@ export default function Home(props: Props) {
 
 
   const drawer = (
-    <div>
+    <Box>
       <Toolbar />
       <Divider />
       <List>
@@ -181,10 +192,10 @@ export default function Home(props: Props) {
 
           <ListItem key='Check if polygon have point' disablePadding>
             <ListItemButton
-              selected={selectedIndex === 15}
+              selected={selectedIndex === 20}
               onClick={(event) => {
                 setGenerator(new PointInsidePolygon())
-                handleListItemClick(event, 15)
+                handleListItemClick(event, 20)
               }}
             >
               <ListItemIcon>
@@ -286,7 +297,7 @@ export default function Home(props: Props) {
                 }}
               >
                 <ListItemIcon>
-                  <AutoGraphIcon />
+                  <PanoramaFishEyeIcon />
                 </ListItemIcon>
                 <ListItemText primary="Ellipse" />
               </ListItemButton>
@@ -299,7 +310,7 @@ export default function Home(props: Props) {
                 }}
               >
                 <ListItemIcon>
-                  <AutoGraphIcon />
+                  <PanoramaFishEyeIcon />
                 </ListItemIcon>
                 <ListItemText primary="Parabola" />
               </ListItemButton>
@@ -312,7 +323,7 @@ export default function Home(props: Props) {
                 }}
               >
                 <ListItemIcon>
-                  <AutoGraphIcon />
+                  <PanoramaFishEyeIcon />
                 </ListItemIcon>
                 <ListItemText primary="Hyperbola" />
               </ListItemButton>
@@ -471,6 +482,81 @@ export default function Home(props: Props) {
             </List>
           </Collapse>
 
+
+          <ListItemButton onClick={() => {handleCollapseClick("Polygon Fillers")}}>
+            <ListItemIcon>
+              <FormatColorFillIcon/>
+            </ListItemIcon>
+            <ListItemText primary="Polygon Fillers" />
+              {open === "MCH" ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={open === "Polygon Fillers" ? true : false} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              
+              <ListItem key='Raster Reamer' disablePadding>
+                <ListItemButton 
+                  selected={selectedIndex === 16} 
+                  onClick={(event) => {
+                    setGenerator(new FillPolygonGenerator(new RasterReamerFiller()))
+                    handleListItemClick(event, 16)
+                  }}
+                >
+                  <ListItemIcon>
+                    <FormatPaintIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary='Raster Reamer'/>
+                </ListItemButton>
+              </ListItem>
+
+              <ListItem key='Simple Inoculum' disablePadding>
+                <ListItemButton 
+                  selected={selectedIndex === 17} 
+                  onClick={(event) => {
+                    setGenerator(new FillPolygonGenerator(new SimpleInoculumFiller()))
+                    handleListItemClick(event, 17)
+                  }}
+                >
+                  <ListItemIcon>
+                    <FormatPaintIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary='Simple Inoculum'/>
+                </ListItemButton>
+              </ListItem>
+
+              <ListItem key='Line Inoculum' disablePadding>
+                <ListItemButton 
+                  selected={selectedIndex === 18} 
+                  onClick={(event) => {
+                    setGenerator(new FillPolygonGenerator(new LineInoculumFiller()))
+                    handleListItemClick(event, 18)
+                  }}
+                >
+                  <ListItemIcon>
+                    <FormatPaintIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary='Line Inoculum'/>
+                </ListItemButton>
+              </ListItem>
+
+              <ListItem key='Raster Reamer Active edges' disablePadding>
+                <ListItemButton 
+                  selected={selectedIndex === 19} 
+                  onClick={(event) => {
+                    setGenerator(new FillPolygonGenerator(new RasterReamerActiveEdgeFiller()))
+                    handleListItemClick(event, 19)
+                  }}
+                >
+                  <ListItemIcon>
+                    <FormatPaintIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary='Raster Reamer Active edges'/>
+                </ListItemButton>
+              </ListItem>
+              
+            
+            </List>
+          </Collapse>
+
           
     
       </List>
@@ -494,7 +580,7 @@ export default function Home(props: Props) {
           />
         </div>
       </List> */}
-    </div>
+    </Box>
   );
   
   const container = window !== undefined ? () => window().document.body : undefined;
