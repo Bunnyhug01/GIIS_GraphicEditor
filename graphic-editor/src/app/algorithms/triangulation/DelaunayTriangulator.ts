@@ -69,7 +69,7 @@ export default class DelaunayTriangulator extends Triangulator {
                         const index = active.indexOf(a)
 
                         if (index !== -1)
-                        active.splice(index, 1)
+                            active.splice(index, 1)
 
                         result.push(a);
                     } else {

@@ -29,6 +29,9 @@ import PanoramaWideAngleIcon from '@mui/icons-material/PanoramaWideAngle';
 import HighlightAltIcon from '@mui/icons-material/HighlightAlt';
 import FormatColorFillIcon from '@mui/icons-material/FormatColorFill';
 import FormatPaintIcon from '@mui/icons-material/FormatPaint';
+import ChangeHistoryIcon from '@mui/icons-material/ChangeHistory';
+import DeviceHubIcon from '@mui/icons-material/DeviceHub';
+import PieChartIcon from '@mui/icons-material/PieChart';
 
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -564,7 +567,7 @@ export default function Home(props: Props) {
 
           <ListItemButton onClick={() => {handleCollapseClick("Triangulation")}}>
             <ListItemIcon>
-              <FormatColorFillIcon/>
+              <ChangeHistoryIcon/>
             </ListItemIcon>
             <ListItemText primary="Triangulation" />
               {open === "Triangulation" ? <ExpandLess /> : <ExpandMore />}
@@ -581,7 +584,7 @@ export default function Home(props: Props) {
                   }}
                 >
                   <ListItemIcon>
-                    <FormatPaintIcon/>
+                    <DeviceHubIcon/>
                   </ListItemIcon>
                   <ListItemText primary='Delaunay Triangulation'/>
                 </ListItemButton>
@@ -596,7 +599,7 @@ export default function Home(props: Props) {
                   }}
                 >
                   <ListItemIcon>
-                    <FormatPaintIcon/>
+                    <PieChartIcon/>
                   </ListItemIcon>
                   <ListItemText primary='Voronoi Diagram'/>
                 </ListItemButton>
