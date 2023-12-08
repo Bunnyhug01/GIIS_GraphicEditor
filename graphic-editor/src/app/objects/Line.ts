@@ -36,6 +36,10 @@ export class Line {
     public get points() : Point[] {
         return [this.point1, this.point2]
     }
+
+    public get perpendicular() : Line {
+        return new Line(this.center, new Point(this.center.x + this.normal.x, this.center.y + this.normal.y))
+    }
     
 }
 

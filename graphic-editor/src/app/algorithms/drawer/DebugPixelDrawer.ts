@@ -40,4 +40,12 @@ export default class DebugPixelDrawer extends PixelDrawer {
             this.originPixelDrawer.drawColorPixel(x, y, color);
         }
     }
+
+    getWidth(): number {
+        return this.originPixelDrawer.getWidth()
+    }
+
+    getHeight(): number {
+        return this.originPixelDrawer.getHeight()
+    }
 }

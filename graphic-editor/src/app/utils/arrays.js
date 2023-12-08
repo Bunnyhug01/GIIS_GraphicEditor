@@ -44,3 +44,16 @@ export function any(array, fn) {
 
 	return false
 }
+
+export function minIndexBy(array, fn) {
+	let index = 0;
+    let minElement = fn(array[index]);
+    for (let i = 1; i < array.length; i++) {
+        const element = fn(array[i]);
+        if (minElement > element) {
+            minElement = element;
+            index = i;
+        }
+    }
+    return index; 
+};

@@ -22,4 +22,12 @@ export default class BasePixelDrawer extends PixelDrawer {
         this.ctx.fillRect(x * this.pixelSize, y * this.pixelSize, this.pixelSize, this.pixelSize);
         this.ctx.globalAlpha = 1
     }
+
+    getWidth(): number {
+        return this.ctx.canvas.width / this.pixelSize
+    }
+
+    getHeight(): number {
+        return this.ctx.canvas.height / this.pixelSize
+    }
 }

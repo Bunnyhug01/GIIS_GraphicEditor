@@ -70,6 +70,11 @@ import RasterReamerFiller from './algorithms/drawer/fillers/RasterReamerFiller';
 import SimpleInoculumFiller from './algorithms/drawer/fillers/SimpleInoculumFiller';
 import RasterReamerActiveEdgeFiller from './algorithms/drawer/fillers/RasterReamerActiveEdgeFiller';
 import LineInoculumFiller from './algorithms/drawer/fillers/LineInoculumFiller';
+import TriangulationGenerator from './generator/TriangulationGenerator';
+import VoronoiDiagram from './objects/voronoi/VoronoiDiagram';
+import VoronoiGenerator from './generator/VoronoiGenerator';
+import DelaunayTriangulator from './algorithms/triangulation/DelaunayTriangulator';
+import FillVoronoiDiagram from './objects/voronoi/FillVoronoiDiagram';
 
 
 const drawerWidth = 240;
@@ -553,6 +558,49 @@ export default function Home(props: Props) {
                 </ListItemButton>
               </ListItem>
               
+            
+            </List>
+          </Collapse>
+
+          <ListItemButton onClick={() => {handleCollapseClick("Triangulation")}}>
+            <ListItemIcon>
+              <FormatColorFillIcon/>
+            </ListItemIcon>
+            <ListItemText primary="Triangulation" />
+              {open === "Triangulation" ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={open === "Triangulation" ? true : false} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              
+              <ListItem key='Delaunay Triangulation' disablePadding>
+                <ListItemButton 
+                  selected={selectedIndex === 21} 
+                  onClick={(event) => {
+                    setGenerator(new TriangulationGenerator(new DelaunayTriangulator()))
+                    handleListItemClick(event, 21)
+                  }}
+                >
+                  <ListItemIcon>
+                    <FormatPaintIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary='Delaunay Triangulation'/>
+                </ListItemButton>
+              </ListItem>
+
+              <ListItem key='Voronoi Diagram' disablePadding>
+                <ListItemButton 
+                  selected={selectedIndex === 22} 
+                  onClick={(event) => {
+                    setGenerator(new VoronoiGenerator(new FillVoronoiDiagram()))
+                    handleListItemClick(event, 22)
+                  }}
+                >
+                  <ListItemIcon>
+                    <FormatPaintIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary='Voronoi Diagram'/>
+                </ListItemButton>
+              </ListItem>
             
             </List>
           </Collapse>
