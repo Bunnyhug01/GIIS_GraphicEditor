@@ -8,7 +8,7 @@ import isLinesEqual from "@/app/utils/isLinesEqual";
 
 export default class DelaunayTriangulator extends Triangulator {
     
-    solve(points: Point[]): Line[] {
+    solve(points: Point[]): Line[] | null {
 
         try {
             const pointsArr = Array.from(points);
@@ -61,8 +61,7 @@ export default class DelaunayTriangulator extends Triangulator {
                 
                 const up = (a: Line) => {
                     if (isLinesEqual(a, result)) {
-                        // throw new Error(`${a} in ${result}`);
-                        return
+                        throw new Error(`${a} in ${result}`);
                     }
                     if (isLinesEqual(a, active)) {
 
@@ -85,7 +84,7 @@ export default class DelaunayTriangulator extends Triangulator {
             return result;  
         
         } catch {
-            return []
+            return null
         }
 
     }

@@ -8,6 +8,12 @@ export default function isLinesEqual(line1: Line, painted: Line[]) {
                 return true
             }
         }
+
+        if (line1.point1.x === line2.point2.x && line1.point1.y === line2.point2.y) {
+            if (line1.point2.x === line2.point1.x && line1.point2.y === line2.point1.y) {
+                return true
+            }
+        }
     }
     
     return false 
