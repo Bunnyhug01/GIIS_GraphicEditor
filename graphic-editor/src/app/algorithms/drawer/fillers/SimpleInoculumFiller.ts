@@ -16,7 +16,6 @@ export default class SimpleInoculumFiller extends FillDrawer {
 
 
         while (stack.length !== 0) {
-            console.log(stack)
             const point = stack.pop()!
             painted.push(point)
 

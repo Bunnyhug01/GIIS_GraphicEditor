@@ -12,6 +12,7 @@ class JSGeneratorContext extends GeneratorContext {
     objects: DrawObject[] = []
     debug: boolean = false
     pixelSize: number = 10
+    color: string = 'black'
 
     constructor() {
       super()
@@ -40,7 +41,10 @@ class JSGeneratorContext extends GeneratorContext {
     setPixelSize(size: number) {
       this.pixelSize = size
     }
-      
+    
+    setColor(color: string) {
+      this.color = color
+    }
 
     isDebug(): boolean {
       return this.debug      
@@ -77,9 +81,9 @@ class JSGeneratorContext extends GeneratorContext {
       const canvas = document.getElementById('canvas') as HTMLCanvasElement;
       const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
-      ctx.fillStyle = 'black'
+      ctx.fillStyle = this.color
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const pixelDrawer = new BasePixelDrawer(ctx, this.pixelSize)
+      const pixelDrawer = new BasePixelDrawer(ctx, this.pixelSize, this.color)
 
       if (this.debug)
         debugGrid(ctx, canvas.width, canvas.height, this.pixelSize);
@@ -96,7 +100,14 @@ class JSGeneratorContext extends GeneratorContext {
               const point = cross(lineA , lineB)
               
               if (point === null) continue
-              pixelDrawer.drawColorPixel(point.x, point.y, 'green')
+
+              if (this.color === 'green') {
+                pixelDrawer.drawColorPixel(point.x, point.y, 'red')
+              }
+              else {
+                pixelDrawer.drawColorPixel(point.x, point.y, 'green')
+              }
+                
             }
           }
         }

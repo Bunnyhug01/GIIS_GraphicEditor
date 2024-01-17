@@ -41,7 +41,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
-import { Collapse, styled } from '@mui/material';
+import { Collapse, Slider, styled } from '@mui/material';
 
 import TwoPointGenerator from './generator/TwoPointGenerator';
 import DDALineDrawer from './algorithms/drawer/lines/DDALineDrawer';
@@ -74,7 +74,6 @@ import SimpleInoculumFiller from './algorithms/drawer/fillers/SimpleInoculumFill
 import RasterReamerActiveEdgeFiller from './algorithms/drawer/fillers/RasterReamerActiveEdgeFiller';
 import LineInoculumFiller from './algorithms/drawer/fillers/LineInoculumFiller';
 import TriangulationGenerator from './generator/TriangulationGenerator';
-import VoronoiDiagram from './objects/voronoi/VoronoiDiagram';
 import VoronoiGenerator from './generator/VoronoiGenerator';
 import DelaunayTriangulator from './algorithms/triangulation/DelaunayTriangulator';
 import FillVoronoiDiagram from './objects/voronoi/FillVoronoiDiagram';
@@ -116,8 +115,7 @@ export default function Home(props: Props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
-  const [color, setColor] = useState<string>("black");
-
+  
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -612,7 +610,7 @@ export default function Home(props: Props) {
     
       </List>
              
-      {/* <List className='items-center'>
+      <List className='items-center'>
         <Typography>Pixel Size</Typography>
         <Slider
           className='ml-5 w-[80%]'
@@ -627,10 +625,10 @@ export default function Home(props: Props) {
           <input 
             type="color"
             className="ml-5 w-[80%]"
-            onChange={(color) => setColor(color.target.value)}
+            onChange={(color) => handleColor(color.target.value)}
           />
         </div>
-      </List> */}
+      </List>
     </Box>
   );
   
@@ -647,21 +645,34 @@ export default function Home(props: Props) {
 
   function handleSlider(value: number | number[]) {
     const size = Array.isArray(value) ? value[0] : value;
+    context.clear()
     context.setPixelSize(size);
+  }
+
+  function handleColor(value: string) {
+    context.setColor(value);
   }
   
   function closeThreeDRegime() {
     const canvasThreeD = document.getElementById("3Dcanvas")
-    console.log(canvasThreeD)
     canvasThreeD?.remove()
   }
 
   useEffect(() => {
+    const canvasBox = document.getElementById('canvases')
+
     const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+    const secondCanvas = document.getElementById('canvas2') as HTMLCanvasElement;
+
+    canvas.width = canvasBox!.offsetWidth
+    canvas.height = canvasBox!.offsetHeight
+
+    secondCanvas.width = canvasBox!.offsetWidth
+    secondCanvas.height = canvasBox!.offsetHeight
 
     if (canvas.getContext) {
       const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-
+      
       const clickListener = (evt: MouseEvent) => {
         const mousePos = getMousePos(canvas, evt)
         generator?.click(context, Math.floor(mousePos.x / context.pixelSize), Math.floor(mousePos.y / context.pixelSize))
@@ -764,11 +775,11 @@ export default function Home(props: Props) {
         sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
         <Toolbar />
-        <Box id='canvases' className="relative">
-          <canvas id="canvas" width="1200" height="720" 
+        <Box id='canvases' className="relative w-[80svw] h-[85svh]">
+          <canvas id="canvas" 
             className='absolute left-0 top-0 z-40 border'>
           </canvas>
-          <canvas id="canvas2" width="1200" height="720" 
+          <canvas id="canvas2" 
             className='absolute left-0 top-0 z-0 border'>
           </canvas>
         </Box>
